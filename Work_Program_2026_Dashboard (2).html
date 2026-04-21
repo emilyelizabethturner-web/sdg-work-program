@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Active Project Work Program 2026</title>
+<style>*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #ffffff;
+    --bg-secondary: #f5f5f3;
+    --bg-tertiary: #eeede9;
+    --text: #1a1a18;
+    --text-secondary: #6b6b67;
+    --text-tertiary: #9a9a96;
+    --border: rgba(0,0,0,0.12);
+    --border-hover: rgba(0,0,0,0.22);
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-xl: 16px;
+    --blue-bg: #e6f1fb; --blue-text: #0c447c;
+    --green-bg: #eaf3de; --green-text: #3b6d11;
+    --amber-bg: #faeeda; --amber-text: #854f0b;
+    --red-bg: #fcebeb; --red-text: #a32d2d;
+    --gray-bg: #f1efe8; --gray-text: #5f5e5a;
+    --teal-bg: #e1f5ee; --teal-text: #0f6e56;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1c1c1a; --bg-secondary: #252523; --bg-tertiary: #2e2e2b;
+      --text: #f0efeb; --text-secondary: #a8a8a4; --text-tertiary: #6b6b67;
+      --border: rgba(255,255,255,0.1); --border-hover: rgba(255,255,255,0.2);
+      --blue-bg: #0c447c; --blue-text: #b5d4f4;
+      --green-bg: #27500a; --green-text: #c0dd97;
+      --amber-bg: #633806; --amber-text: #fac775;
+      --red-bg: #791f1f; --red-text: #f7c1c1;
+      --gray-bg: #444441; --gray-text: #d3d1c7;
+      --teal-bg: #085041; --teal-text: #9fe1cb;
+    }
+  }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg-tertiary); color: var(--text); font-size: 14px; line-height: 1.6; min-height: 100vh; }
+  .page { max-width: 900px; margin: 0 auto; padding: 2rem 1rem 4rem; }
+  header { margin-bottom: 2rem; }
+  header h1 { font-size: 22px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+  header p { font-size: 13px; color: var(--text-secondary); }
+  .summary-bar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 1.5rem; }
+  .stat { background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius-md); padding: 12px 14px; text-align: center; }
+  .stat-num { font-size: 26px; font-weight: 600; color: var(--text); line-height: 1; }
+  .stat-lbl { font-size: 11px; color: var(--text-secondary); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.04em; }
+  .controls { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 1rem; align-items: center; }
+  .controls input[type=text] { flex: 1; min-width: 180px; padding: 8px 12px; border: 0.5px solid var(--border); border-radius: var(--radius-md); background: var(--bg); color: var(--text); font-size: 13px; outline: none; }
+  .controls input[type=text]:focus { border-color: var(--border-hover); }
+  .controls select { padding: 8px 12px; border: 0.5px solid var(--border); border-radius: var(--radius-md); background: var(--bg); color: var(--text); font-size: 13px; outline: none; cursor: pointer; }
+  .tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 1.25rem; }
+  .tab { padding: 6px 16px; border-radius: 99px; font-size: 12px; cursor: pointer; border: 0.5px solid var(--border); background: var(--bg); color: var(--text-secondary); transition: all 0.15s; user-select: none; }
+  .tab:hover { border-color: var(--border-hover); color: var(--text); }
+  .tab.active { background: var(--text); color: var(--bg); border-color: var(--text); }
+  .grid { display: flex; flex-direction: column; gap: 10px; }
+  .card { background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; transition: box-shadow 0.15s; }
+  .card:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+  .card-header { display: flex; align-items: center; gap: 8px; padding: 12px 16px; cursor: pointer; user-select: none; flex-wrap: wrap; }
+  .card-header:hover { background: var(--bg-secondary); }
+  .proj-num { font-size: 11px; color: var(--text-tertiary); min-width: 42px; font-weight: 500; }
+  .proj-name { font-size: 14px; font-weight: 500; color: var(--text); flex: 1; min-width: 160px; }
+  .badge { font-size: 11px; padding: 3px 10px; border-radius: 99px; white-space: nowrap; font-weight: 500; }
+  .badge-done { background: var(--green-bg); color: var(--green-text); }
+  .badge-closed { background: var(--gray-bg); color: var(--gray-text); }
+  .badge-heldup { background: var(--red-bg); color: var(--red-text); }
+  .badge-progress { background: var(--amber-bg); color: var(--amber-text); }
+  .badge-hold { background: var(--gray-bg); color: var(--gray-text); }
+  .badge-stuck { background: var(--red-bg); color: var(--red-text); }
+  .staff-pill { font-size: 11px; padding: 3px 10px; border-radius: 99px; background: var(--blue-bg); color: var(--blue-text); white-space: nowrap; font-weight: 500; }
+  .chevron { font-size: 14px; color: var(--text-tertiary); transition: transform 0.2s; margin-left: auto; flex-shrink: 0; }
+  .chevron.open { transform: rotate(90deg); }
+  .card-body { display: none; border-top: 0.5px solid var(--border); }
+  .card-body.open { display: block; }
+  .milestone-row { display: grid; grid-template-columns: 170px 1fr 28px; gap: 10px; align-items: start; padding: 10px 16px; border-bottom: 0.5px solid var(--border); font-size: 13px; }
+  .milestone-row:last-child { border-bottom: none; }
+  .ms-label { color: var(--text-secondary); font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; padding-top: 2px; }
+  .ms-comment { color: var(--text); line-height: 1.55; }
+  .ms-comment em { font-style: normal; font-size: 11px; color: var(--text-tertiary); display: block; margin-top: 3px; }
+  .ms-status { display: flex; justify-content: center; padding-top: 4px; }
+  .dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+  .dot-done { background: var(--green-text); }
+  .dot-progress { background: #d97706; }
+  .dot-hold { background: var(--text-tertiary); }
+  .dot-stuck { background: var(--red-text); }
+  .card-comment { padding: 10px 16px 14px; font-size: 13px; color: var(--text-secondary); line-height: 1.55; }
+  .section-label { font-size: 11px; font-weight: 600; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.07em; padding: 1.25rem 0 0.5rem; }
+  .no-results { text-align: center; color: var(--text-tertiary); font-size: 14px; padding: 3rem 0; }
+  .lodge-body { padding: 14px 16px; }
+  .lodge-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+  .meta-pill { font-size: 11px; padding: 3px 9px; border-radius: 99px; background: var(--teal-bg); color: var(--teal-text); font-weight: 500; }
+  .lodge-latest { font-size: 13px; color: var(--text); line-height: 1.55; padding: 10px 12px; background: var(--bg-secondary); border-radius: var(--radius-md); margin-bottom: 12px; border-left: 3px solid var(--amber-text); }
+  .lodge-latest strong { display: block; font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--amber-text); margin-bottom: 4px; }
+  .history-toggle { font-size: 12px; color: var(--text-secondary); cursor: pointer; padding: 4px 0; border: none; background: none; text-decoration: underline; color: var(--blue-text); }
+  .history-list { display: none; margin-top: 10px; border-left: 2px solid var(--border); padding-left: 14px; }
+  .history-list.open { display: block; }
+  .history-item { margin-bottom: 10px; font-size: 12px; }
+  .history-date { color: var(--text-tertiary); font-weight: 600; font-size: 11px; }
+  .history-by { color: var(--blue-text); font-weight: 600; font-size: 11px; background: var(--blue-bg); padding: 1px 6px; border-radius: 4px; margin-left: 4px; }
+  .history-note { color: var(--text-secondary); line-height: 1.5; margin-top: 2px; }
+  @media (max-width: 600px) {
+    .summary-bar { grid-template-columns: repeat(2, 1fr); }
+    .milestone-row { grid-template-columns: 1fr; }
+    .ms-status { justify-content: flex-start; }
+  }
+
+  .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.45); z-index:1000; align-items:center; justify-content:center; }
+  .modal-overlay.open { display:flex; }
+  .modal { background:var(--bg); border-radius:var(--radius-xl); padding:1.5rem; width:min(560px,92vw); max-height:90vh; overflow-y:auto; box-shadow:0 8px 32px rgba(0,0,0,0.18); }
+  .modal h3 { font-size:15px; font-weight:600; margin-bottom:1rem; color:var(--text); }
+  .modal label { display:block; font-size:11px; font-weight:600; color:var(--text-secondary); text-transform:uppercase; letter-spacing:.04em; margin:10px 0 4px; }
+  .modal input, .modal textarea, .modal select { width:100%; padding:8px 10px; border:0.5px solid var(--border); border-radius:var(--radius-md); background:var(--bg-secondary); color:var(--text); font-size:13px; font-family:inherit; outline:none; }
+  .modal textarea { min-height:80px; resize:vertical; }
+  .modal input:focus, .modal textarea:focus, .modal select:focus { border-color:var(--border-hover); }
+  .modal-actions { display:flex; gap:8px; justify-content:flex-end; margin-top:1.25rem; flex-wrap:wrap; }
+  .btn { padding:7px 18px; border-radius:var(--radius-md); font-size:13px; cursor:pointer; border:0.5px solid var(--border); background:var(--bg); color:var(--text); font-family:inherit; }
+  .btn-primary { background:var(--text); color:var(--bg); border-color:var(--text); }
+  .btn-danger { background:var(--red-bg); color:var(--red-text); border-color:var(--red-text); }
+  .btn:hover { opacity:.85; }
+  .edit-btn { display:inline-flex; align-items:center; justify-content:center; width:22px; height:22px; border-radius:4px; background:transparent; border:none; cursor:pointer; color:var(--text-tertiary); font-size:13px; opacity:0; transition:opacity .15s; margin-left:4px; flex-shrink:0; }
+  .card-header:hover .edit-btn, .milestone-row:hover .edit-btn { opacity:1; }
+  .edit-btn:hover { color:var(--text); background:var(--bg-tertiary); }
+  .add-btn { display:inline-flex; align-items:center; gap:5px; padding:5px 12px; border-radius:99px; font-size:12px; cursor:pointer; border:0.5px dashed var(--border); background:transparent; color:var(--text-secondary); font-family:inherit; margin:8px 0 4px; }
+  .add-btn:hover { border-color:var(--border-hover); color:var(--text); }
+  .toast { position:fixed; bottom:1.5rem; right:1.5rem; background:var(--text); color:var(--bg); padding:10px 18px; border-radius:var(--radius-md); font-size:13px; z-index:2000; opacity:0; transform:translateY(8px); transition:all .2s; pointer-events:none; }
+  .toast.show { opacity:1; transform:translateY(0); }
+  .toast.error { background:var(--red-text); }
+  .sync-bar { display:flex; align-items:center; gap:8px; font-size:11px; color:var(--text-tertiary); margin-bottom:.75rem; }
+  .sync-dot { width:7px; height:7px; border-radius:50%; background:var(--green-text); flex-shrink:0; }
+  .sync-dot.syncing { background:#d97706; animation:pulse .8s infinite; }
+  .sync-dot.error { background:var(--red-text); }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+  .setup-banner { background:var(--amber-bg); border:0.5px solid var(--amber-text); border-radius:var(--radius-md); padding:12px 16px; margin-bottom:1rem; font-size:13px; color:var(--amber-text); }
+  .setup-banner strong { display:block; margin-bottom:4px; }
+  .setup-banner input { width:100%; margin-top:6px; padding:6px 10px; border:0.5px solid var(--amber-text); border-radius:var(--radius-md); background:var(--bg); color:var(--text); font-size:12px; font-family:monospace; }
+
+  .vijay-section { margin-top: 2rem; }
+  .vijay-header { display:flex; align-items:center; gap:10px; margin-bottom:1rem; padding:12px 16px; background:var(--blue-bg); border:0.5px solid var(--border); border-radius:var(--radius-lg); }
+  .vijay-header h2 { font-size:13px; font-weight:600; color:var(--blue-text); flex:1; margin:0; line-height:1.4; }
+  .vijay-header span { font-size:11px; color:var(--blue-text); opacity:0.75; }
+  .vijay-badge { font-size:11px; padding:3px 10px; border-radius:99px; background:var(--blue-bg); color:var(--blue-text); border:0.5px solid var(--border); font-weight:500; }
+  .vijay-action-row { display:grid; grid-template-columns:170px 1fr 28px; gap:10px; align-items:start; padding:10px 16px; border-bottom:0.5px solid var(--border); font-size:13px; }
+  .vijay-action-row:last-child { border-bottom:none; }
+  .vijay-proj-ref { color:var(--text-secondary); font-weight:600; font-size:11px; text-transform:uppercase; letter-spacing:.04em; padding-top:2px; }
+</style>
+</head><body>
+<div class="page">
+<header><h1>Active Project Work Program 2026</h1>
+<p>Live dashboard — syncs with Google Sheets. Hover any card and click ✎ to edit.</p></header>
+<div class="setup-banner" id="setupBanner" style="display:none">
+<strong>⚙ Connect to Google Sheets</strong>
+Paste your Apps Script Web App URL below to connect live data:
+<input type="text" id="sheetUrlInput" placeholder="https://script.google.com/macros/s/...">
+<div style="display:flex;gap:8px;margin-top:8px">
+<button class="btn btn-primary" onclick="saveSheetUrl()">Connect</button>
+<button class="btn" onclick="loadDemoData()">Use offline demo</button>
+</div></div>
+<div class="sync-bar" id="syncBar"><span class="sync-dot" id="syncDot"></span><span id="syncText">Loading...</span><button class="btn" style="margin-left:auto;padding:4px 12px;font-size:11px" onclick="fetchData()">↻ Refresh</button></div>
+<div class="summary-bar" id="summaryBar"><div class="stat"><div class="stat-num">—</div><div class="stat-lbl">In Progress</div></div><div class="stat"><div class="stat-num">—</div><div class="stat-lbl">On Hold</div></div><div class="stat"><div class="stat-num">—</div><div class="stat-lbl">No Progress</div></div><div class="stat"><div class="stat-num">—</div><div class="stat-lbl">Lodgements</div></div></div>
+<div class="controls"><input type="text" id="search" placeholder="Search projects, staff, or keywords..."><select id="staffFilter"><option value="">All staff</option></select></div>
+<div class="tabs" id="tabs"></div>
+<div class="grid" id="grid"></div>
+<div id="noResults" class="no-results" style="display:none">No projects match your search.</div>
+<div class="vijay-section" id="vijaySection" style="display:none"></div>
+<div id="addButtons" style="margin-top:1rem;display:flex;gap:8px;flex-wrap:wrap"></div>
+</div>
+<div class="modal-overlay" id="modalOverlay"><div class="modal" id="modalBox"><h3 id="modalTitle">Edit</h3><div id="modalBody"></div><div class="modal-actions"><button class="btn btn-danger" id="modalDeleteBtn" style="display:none;margin-right:auto" onclick="handleModalDelete()">Delete</button><button class="btn" onclick="closeModal()">Cancel</button><button class="btn btn-primary" onclick="handleModalSave()">Save</button></div></div></div>
+<div class="toast" id="toast"></div>
+<script>
+let SHEET_URL = localStorage.getItem('sdg_sheet_url') || '';
+let DATA = { active:[], onHold:[], standby:[], lodgements:[], staff:[] };
+let currentTab = 'active';
+let searchVal = '', staffVal = '';
+let modalContext = null;
+
+window.addEventListener('DOMContentLoaded', () => {
+  if (!SHEET_URL) {
+    document.getElementById('setupBanner').style.display = 'block';
+    setSyncStatus('error', 'Not connected — enter your Apps Script URL above');
+  } else {
+    fetchData();
+  }
+  document.getElementById('search').addEventListener('input', e => { searchVal = e.target.value; render(); });
+  document.getElementById('staffFilter').addEventListener('change', e => { staffVal = e.target.value; render(); });
+  setInterval(() => { if (SHEET_URL) fetchData(); }, 5 * 60 * 1000);
+});
+
+function saveSheetUrl() {
+  const url = document.getElementById('sheetUrlInput').value.trim();
+  if (!url.startsWith('https://')) return showToast('Please enter a valid URL', true);
+  SHEET_URL = url;
+  localStorage.setItem('sdg_sheet_url', url);
+  document.getElementById('setupBanner').style.display = 'none';
+  fetchData();
+}
+
+function fetchData() {
+  if (!SHEET_URL) return;
+  setSyncStatus('syncing', 'Syncing...');
+  return new Promise((resolve, reject) => {
+    const callbackName = 'sdg_callback_' + Date.now();
+    const script = document.createElement('script');
+    window[callbackName] = function(json) {
+      delete window[callbackName];
+      document.body.removeChild(script);
+      if (json.error) {
+        setSyncStatus('error', 'Error: ' + json.error);
+        showToast('Could not load data: ' + json.error, true);
+        reject(json.error);
+        return;
+      }
+      DATA = json;
+      buildStaffFilter();
+      buildTabs();
+      updateSummary();
+      render();
+      setSyncStatus('ok', 'Last synced ' + new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'}));
+      resolve();
+    };
+    script.onerror = function() {
+      delete window[callbackName];
+      document.body.removeChild(script);
+      setSyncStatus('error', 'Sync failed — check your URL');
+      showToast('Could not load data from Google Sheets', true);
+      reject('Script load error');
+    };
+    script.src = SHEET_URL + '?action=getData&callback=' + callbackName;
+    document.body.appendChild(script);
+  });
+}
+
+async function apiPost(payload) {
+  setSyncStatus('syncing', 'Saving...');
+  return new Promise((resolve, reject) => {
+    const callbackName = 'sdg_post_' + Date.now();
+    const script = document.createElement('script');
+    const encoded = encodeURIComponent(JSON.stringify(payload));
+    window[callbackName] = function(json) {
+      delete window[callbackName];
+      document.body.removeChild(script);
+      if (json.error) { reject(new Error(json.error)); return; }
+      fetchData().then(() => resolve(json)).catch(reject);
+    };
+    script.onerror = function() {
+      delete window[callbackName];
+      document.body.removeChild(script);
+      reject(new Error('Request failed'));
+    };
+    script.src = SHEET_URL + '?callback=' + callbackName + '&payload=' + encoded;
+    document.body.appendChild(script);
+  });
+}
+
+function setSyncStatus(state, msg) {
+  const dot = document.getElementById('syncDot');
+  dot.className = 'sync-dot' + (state === 'syncing' ? ' syncing' : state === 'error' ? ' error' : '');
+  document.getElementById('syncText').textContent = msg;
+}
+
+function showToast(msg, isError) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show' + (isError ? ' error' : '');
+  setTimeout(() => { t.className = 'toast'; }, 3000);
+}
+
+function buildStaffFilter() {
+  const sel = document.getElementById('staffFilter');
+  const all = new Set();
+  [...DATA.active, ...(DATA.onHold||[]), ...(DATA.standby||[])].forEach(p => (p.staff||[]).forEach(s => all.add(s)));
+  (DATA.lodgements||[]).forEach(p => (p.staff||[]).forEach(s => all.add(s)));
+  const cur = sel.value;
+  sel.innerHTML = '<option value="">All staff</option>';
+  [...all].sort().forEach(s => { sel.innerHTML += `<option ${s===cur?'selected':''}>${s}</option>`; });
+}
+
+function buildTabs() {
+  const defs = [{id:'active',label:'Active Projects'},{id:'lodgements',label:'Lodgements'}];
+  document.getElementById('tabs').innerHTML = defs.map(t =>
+    `<div class="tab ${t.id===currentTab?'active':''}" onclick="switchTab('${t.id}')">${t.label}</div>`
+  ).join('');
+}
+
+function switchTab(t) { currentTab = t; buildTabs(); render(); }
+
+function updateSummary() {
+  const prog  = DATA.active.filter(p => p.overall==='progress').length;
+  const hold  = DATA.active.filter(p => p.overall==='hold').length + (DATA.onHold||[]).length;
+  const stuck = DATA.active.filter(p => p.overall==='stuck').length;
+  document.getElementById('summaryBar').innerHTML = `
+    <div class="stat"><div class="stat-num">${prog}</div><div class="stat-lbl">In Progress</div></div>
+    <div class="stat"><div class="stat-num">${hold}</div><div class="stat-lbl">On Hold</div></div>
+    <div class="stat"><div class="stat-num">${stuck}</div><div class="stat-lbl">No Progress</div></div>
+    <div class="stat"><div class="stat-num">${(DATA.lodgements||[]).length}</div><div class="stat-lbl">Lodgements</div></div>`;
+}
+
+function statusBadge(s) {
+  const map = {progress:'badge-progress',hold:'badge-hold',stuck:'badge-stuck',done:'badge-done',closed:'badge-closed',heldup:'badge-heldup'};
+  const labels = {progress:'In Progress',hold:'Hold',stuck:'No Progress',done:'Done',closed:'Closed',heldup:'Held Up'};
+  return `<span class="badge ${map[s]||'badge-hold'}">${labels[s]||s}</span>`;
+}
+
+function dotClass(s) {
+  return {progress:'dot-progress',hold:'dot-hold',stuck:'dot-stuck',done:'dot-done'}[s]||'dot-hold';
+}
+
+function matches(p) {
+  const q = searchVal.toLowerCase();
+  const nm = !q || p.name.toLowerCase().includes(q) || (p.id||'').toLowerCase().includes(q)
+    || (p.phase||'').toLowerCase().includes(q)
+    || (p.staff||[]).some(s => s.toLowerCase().includes(q))
+    || (p.milestones||[]).some(m => (m.comment||'').toLowerCase().includes(q) || (m.label||'').toLowerCase().includes(q))
+    || (p.comment||'').toLowerCase().includes(q)
+    || (p.latestUpdate||'').toLowerCase().includes(q);
+  const sm = !staffVal || (p.staff||[]).includes(staffVal);
+  return nm && sm;
+}
+
+function render() {
+  const grid = document.getElementById('grid');
+  const addBtns = document.getElementById('addButtons');
+  if (currentTab === 'active') {
+    grid.innerHTML = renderActive();
+    addBtns.innerHTML = `
+      <button class="add-btn" onclick="openAddProject()">＋ Add Project</button>
+      <button class="add-btn" onclick="openAddOnHold()">＋ Add On-Hold Project</button>`;
+    renderVijaySection();
+  } else {
+    grid.innerHTML = renderLodgements();
+    addBtns.innerHTML = `<button class="add-btn" onclick="openAddLodgement()">＋ Add Lodgement</button>`;
+    document.getElementById('vijaySection').style.display = 'none';
+  }
+  document.getElementById('noResults').style.display = grid.innerHTML.trim() ? 'none' : 'block';
+}
+
+function sortByJobNum(arr) {
+  return arr.slice().sort((a, b) => {
+    const pa = (a.id||'').replace(/[^0-9]/g, '');
+    const pb = (b.id||'').replace(/[^0-9]/g, '');
+    return parseInt(pa||0) - parseInt(pb||0);
+  });
+}
+
+function renderActive() {
+  let html = '';
+
+  // 1. In Progress — sorted by job number
+  const inProgress = sortByJobNum(DATA.active.filter(p => p.overall === 'progress').filter(matches));
+  if (inProgress.length) {
+    html += '<div class="section-label">In Progress</div>';
+    inProgress.forEach(p => { html += projectCard(p); });
+  }
+
+  // 2. Held Up — sorted by job number
+  const heldUp = sortByJobNum(DATA.active.filter(p => p.overall === 'heldup').filter(matches));
+  if (heldUp.length) {
+    html += '<div class="section-label">Held Up</div>';
+    heldUp.forEach(p => { html += projectCard(p); });
+  }
+
+  // 3. On Hold – No Feedback — sorted by job number
+  const holdFiltered = sortByJobNum((DATA.onHold||[]).filter(matches));
+  const onHoldActive = sortByJobNum(DATA.active.filter(p => p.overall === 'hold').filter(matches));
+  if (holdFiltered.length || onHoldActive.length) {
+    html += '<div class="section-label">On Hold – No Feedback</div>';
+    onHoldActive.forEach(p => { html += projectCard(p); });
+    holdFiltered.forEach(p => { html += simpleCard(p, 'hold', 'onHold'); });
+  }
+
+  // 4. No Progress — sorted by job number
+  const noProgress = sortByJobNum(DATA.active.filter(p => p.overall === 'stuck').filter(matches));
+  if (noProgress.length) {
+    html += '<div class="section-label">No Progress</div>';
+    noProgress.forEach(p => { html += projectCard(p); });
+  }
+
+  // 5. Standby
+  if (!searchVal && !staffVal) {
+    html += '<div class="section-label">Standby – Attendance As / When Required</div>';
+    (DATA.standby||[]).forEach(p => { html += simpleCard(p, '', 'standby'); });
+  }
+
+  return html;
+}
+
+function projectCard(p) {
+  const msHtml = (p.milestones||[]).map(ms => `
+    <div class="milestone-row">
+      <div class="ms-label">${ms.label}</div>
+      <div class="ms-comment">${ms.comment||''}${ms.staff ? `<em>Staff: ${ms.staff}</em>` : ''}${ms.date ? `<em>${ms.date}</em>` : ''}</div>
+      <div class="ms-status" style="display:flex;align-items:center;gap:4px">
+        <span class="dot ${dotClass(ms.status)}"></span>
+        <button class="edit-btn" title="Edit milestone" onclick="openEditMilestone(event,'${p.id}','${esc(ms.label)}')">✎</button>
+      </div>
+    </div>`).join('');
+  return `<div class="card">
+    <div class="card-header" onclick="toggleCard(this)">
+      <span class="proj-num">${p.id}</span>
+      <span class="proj-name">${p.name}</span>
+      ${(p.staff||[]).map(s => `<span class="staff-pill">${s}</span>`).join('')}
+      ${statusBadge(p.overall)}
+      <button class="edit-btn" title="Edit project" onclick="openEditProject(event,'${p.id}')">✎</button>
+      <span class="chevron">›</span>
+    </div>
+    <div class="card-body">
+      ${msHtml}
+      <div style="padding:8px 16px">
+        <button class="add-btn" onclick="openAddMilestone(event,'${p.id}')">＋ Add milestone</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function simpleCard(p, badge, section) {
+  return `<div class="card">
+    <div class="card-header" onclick="toggleCard(this)">
+      <span class="proj-num">${p.id}</span>
+      <span class="proj-name">${p.name}</span>
+      ${(p.staff||[]).map(s => `<span class="staff-pill">${s}</span>`).join('')}
+      ${badge ? statusBadge(badge) : ''}
+      <button class="edit-btn" title="Edit" onclick="openEditSimple(event,'${p.id}','${section}')">✎</button>
+      <span class="chevron">›</span>
+    </div>
+    <div class="card-body"><div class="card-comment">${p.comment||''}</div></div>
+  </div>`;
+}
+
+function renderLodgements() {
+  return (DATA.lodgements||[]).filter(matches).map((p, i) => {
+    const histId = 'hist-' + i;
+    const histHtml = (p.history||[]).map(h => {
+      const rawDate = h.date || '';
+      const cleanDate = rawDate.includes('T') 
+        ? rawDate.split('T')[0] 
+        : rawDate.replace(/\s+\d{2}:\d{2}:\d{2}.*$/, '').replace(/\s+GMT.*$/, '').trim();
+      return `
+      <div class="history-item">
+        <span class="history-date">${cleanDate}</span><span class="history-by">${h.by}</span>
+        <div class="history-note">${h.note}</div>
+      </div>`;
+    }).join('');
+    return `<div class="card">
+      <div class="card-header" onclick="toggleCard(this)">
+        <span class="proj-num">${p.id}</span>
+        <span class="proj-name">${p.name}</span>
+        ${(p.staff||[]).map(s => `<span class="staff-pill">${s}</span>`).join('')}
+        ${statusBadge(p.status||'progress')}
+        <button class="edit-btn" title="Edit lodgement" onclick="openEditLodgement(event,'${p.id}')">✎</button>
+        <span class="chevron">›</span>
+      </div>
+      <div class="card-body">
+        <div class="lodge-body">
+          <div class="lodge-meta">
+            ${p.authority ? `<span class="meta-pill">Authority: ${p.authority}</span>` : ''}
+            ${p.refNo ? `<span class="meta-pill">Ref: ${p.refNo}</span>` : ''}
+          </div>
+          <div class="lodge-latest"><strong>Latest Update</strong>${p.latestUpdate||''}</div>
+          ${histHtml ? `<button class="history-toggle" onclick="toggleHistory('${histId}',this)">Show follow-up history (${(p.history||[]).length} entries)</button>
+          <div class="history-list" id="${histId}">${histHtml}</div>` : ''}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderVijaySection() {
+  const sec = document.getElementById('vijaySection');
+  if (searchVal || staffVal || currentTab !== 'active') { sec.style.display='none'; return; }
+  const items = [];
+  DATA.active.forEach(p => {
+    (p.milestones||[]).forEach(ms => {
+      const txt = (ms.comment||'').toLowerCase();
+      if (txt.includes('vs for') || txt.includes('vijay') ||
+         (txt.includes('no feedback') && txt.includes('vs')) ||
+          txt.includes('sent to vs') || txt.includes('given to vijay') ||
+          txt.includes('waiting for vs')) {
+        items.push({proj: p, ms});
+      }
+    });
+  });
+  if (!items.length) { sec.style.display='none'; return; }
+  sec.style.display = 'block';
+  sec.innerHTML = `
+    <div class="vijay-header">
+      <h2>⚑ Vijay Sharma — Items Requiring Attention</h2>
+      <span>${items.length} items awaiting VS review, feedback, or decision</span>
+    </div>` +
+    items.map(({proj, ms}) => `
+    <div class="card">
+      <div class="card-header" onclick="toggleCard(this)">
+        <span class="proj-num">${proj.id}</span>
+        <span class="proj-name">${proj.name}</span>
+        <span class="vijay-badge">${ms.label}</span>
+        <span class="chevron">›</span>
+      </div>
+      <div class="card-body">
+        <div class="vijay-action-row">
+          <div class="vijay-proj-ref">${ms.label}</div>
+          <div class="ms-comment">${ms.comment||''}${ms.staff ? `<em>Staff awaiting: ${ms.staff}</em>` : ''}</div>
+          <div class="ms-status"><span class="dot ${dotClass(ms.status)}"></span></div>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function toggleCard(header) {
+  const body = header.nextElementSibling;
+  const chev = header.querySelector('.chevron');
+  body.classList.toggle('open');
+  if (chev) chev.classList.toggle('open');
+}
+
+function toggleHistory(id, btn) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.classList.toggle('open');
+  btn.textContent = el.classList.contains('open') ? 'Hide follow-up history'
+    : `Show full follow-up history (${el.querySelectorAll('.history-item').length} entries)`;
+}
+
+function esc(s) { return (s||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/"/g,'&quot;'); }
+
+// ── Modal system ───────────────────────────────────────────────
+function openModal(title, bodyHtml, context, showDelete) {
+  modalContext = context;
+  document.getElementById('modalTitle').textContent = title;
+  document.getElementById('modalBody').innerHTML = bodyHtml;
+  document.getElementById('modalDeleteBtn').style.display = showDelete ? 'inline-block' : 'none';
+  document.getElementById('modalOverlay').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+  modalContext = null;
+}
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+document.getElementById('modalOverlay').addEventListener('click', e => {
+  if (e.target === document.getElementById('modalOverlay')) closeModal();
+});
+
+function statusOptions(current) {
+  return ['progress','done','hold','stuck','closed','heldup'].map(s =>
+    `<option ${s===current?'selected':''}>${s}</option>`).join('');
+}
+
+function msStatusOptions(current) {
+  return ['progress','done','hold','stuck'].map(s =>
+    `<option ${s===current?'selected':''}>${s}</option>`).join('');
+}
+
+// ── Edit milestone ─────────────────────────────────────────────
+function openEditMilestone(e, projectId, label) {
+  e.stopPropagation();
+  const p = DATA.active.find(x => x.id === projectId);
+  const ms = p && (p.milestones||[]).find(m => m.label === label);
+  if (!ms) return;
+  openModal('Edit Milestone', `
+    <label>Milestone Label</label>
+    <input id="m_label" value="${esc(ms.label)}">
+    <label>Comment / Notes</label>
+    <textarea id="m_comment">${ms.comment||''}</textarea>
+    <label>Staff</label>
+    <input id="m_staff" value="${ms.staff||''}" placeholder="e.g. Ashreet / Masi">
+    <label>Status</label>
+    <select id="m_status">${msStatusOptions(ms.status)}</select>
+    <label>Date (optional)</label>
+    <input id="m_date" value="${ms.date||''}" placeholder="e.g. Updated 23/03">
+  `, {type:'milestone', projectId, originalLabel: label}, false);
+}
+
+function openAddMilestone(e, projectId) {
+  e.stopPropagation();
+  openModal('Add Milestone', `
+    <label>Milestone Label</label>
+    <input id="m_label" placeholder="e.g. Building Permit">
+    <label>Comment / Notes</label>
+    <textarea id="m_comment" placeholder="Details..."></textarea>
+    <label>Staff</label>
+    <input id="m_staff" placeholder="e.g. Ashreet / Masi">
+    <label>Status</label>
+    <select id="m_status">${msStatusOptions('progress')}</select>
+    <label>Date (optional)</label>
+    <input id="m_date" placeholder="e.g. Updated 23/03">
+  `, {type:'addMilestone', projectId}, false);
+}
+
+// ── Edit project ───────────────────────────────────────────────
+function openEditProject(e, projectId) {
+  e.stopPropagation();
+  const p = DATA.active.find(x => x.id === projectId);
+  if (!p) return;
+  openModal('Edit Project', `
+    <label>Project ID</label>
+    <input id="p_id" value="${esc(p.id)}">
+    <label>Project Name</label>
+    <input id="p_name" value="${esc(p.name)}">
+    <label>Phase</label>
+    <input id="p_phase" value="${p.phase||''}">
+    <label>Staff (comma separated)</label>
+    <input id="p_staff" value="${(p.staff||[]).join(', ')}">
+    <label>Overall Status</label>
+    <select id="p_overall">${statusOptions(p.overall)}</select>
+  `, {type:'project', projectId}, true);
+}
+
+function openAddProject() {
+  openModal('Add New Project', `
+    <label>Project ID</label>
+    <input id="p_id" placeholder="e.g. 26-01">
+    <label>Project Name</label>
+    <input id="p_name" placeholder="Project name">
+    <label>Phase</label>
+    <input id="p_phase" placeholder="e.g. Concept">
+    <label>Staff (comma separated)</label>
+    <input id="p_staff" placeholder="e.g. Ashreet, Masi">
+    <label>Overall Status</label>
+    <select id="p_overall">${statusOptions('progress')}</select>
+    <label>First Milestone Label</label>
+    <input id="p_firstMilestone" placeholder="e.g. Concept Design">
+  `, {type:'addProject'}, false);
+}
+
+// ── Edit on-hold / standby ─────────────────────────────────────
+function openEditSimple(e, id, section) {
+  e.stopPropagation();
+  const list = section === 'standby' ? (DATA.standby||[]) : (DATA.onHold||[]);
+  const p = list.find(x => x.id === id);
+  if (!p) return;
+  openModal((section==='standby'?'Standby':'On-Hold') + ' Project', `
+    <label>Project ID</label>
+    <input id="s_id" value="${esc(p.id)}">
+    <label>Project Name</label>
+    <input id="s_name" value="${esc(p.name)}">
+    <label>Staff (comma separated)</label>
+    <input id="s_staff" value="${(p.staff||[]).join(', ')}">
+    <label>Comment</label>
+    <textarea id="s_comment">${p.comment||''}</textarea>
+  `, {type:'simple', id, section}, false);
+}
+
+function openAddOnHold() {
+  openModal('Add On-Hold Project', `
+    <label>Project ID</label>
+    <input id="s_id" placeholder="e.g. 25-12">
+    <label>Project Name</label>
+    <input id="s_name" placeholder="Project name">
+    <label>Staff (comma separated)</label>
+    <input id="s_staff" placeholder="e.g. Masi">
+    <label>Comment</label>
+    <textarea id="s_comment" placeholder="Status / notes"></textarea>
+  `, {type:'addSimple', section:'onHold'}, false);
+}
+
+// ── Edit lodgement ─────────────────────────────────────────────
+function openEditLodgement(e, id) {
+  e.stopPropagation();
+  const p = (DATA.lodgements||[]).find(x => x.id === id);
+  if (!p) return;
+  openModal('Edit Lodgement', `
+    <label>Project ID</label>
+    <input id="l_id" value="${esc(p.id)}">
+    <label>Project Name</label>
+    <input id="l_name" value="${esc(p.name)}">
+    <label>Staff (comma separated)</label>
+    <input id="l_staff" value="${(p.staff||[]).join(', ')}">
+    <label>Authority</label>
+    <input id="l_authority" value="${p.authority||''}">
+    <label>Ref No</label>
+    <input id="l_refNo" value="${p.refNo||''}">
+    <label>Status</label>
+    <select id="l_status">${statusOptions(p.status)}</select>
+    <label>Latest Update</label>
+    <textarea id="l_update">${p.latestUpdate||''}</textarea>
+    <label>Add Follow-up Entry (optional)</label>
+    <input id="l_histDate" placeholder="Date e.g. 21/04/26">
+    <input id="l_histBy" placeholder="Updated by (name)" style="margin-top:4px">
+    <textarea id="l_histNote" placeholder="Follow-up note" style="margin-top:4px"></textarea>
+  `, {type:'lodgement', id}, false);
+}
+
+function openAddLodgement() {
+  openModal('Add Lodgement', `
+    <label>Project ID</label>
+    <input id="l_id" placeholder="e.g. 25-20">
+    <label>Project Name</label>
+    <input id="l_name" placeholder="Project name">
+    <label>Staff (comma separated)</label>
+    <input id="l_staff" placeholder="e.g. Francis, Emosi">
+    <label>Authority</label>
+    <input id="l_authority" placeholder="e.g. SCC">
+    <label>Ref No</label>
+    <input id="l_refNo" placeholder="e.g. SCC File 12/345">
+    <label>Status</label>
+    <select id="l_status">${statusOptions('progress')}</select>
+    <label>Latest Update</label>
+    <textarea id="l_update" placeholder="Current status..."></textarea>
+  `, {type:'addLodgement'}, false);
+}
+
+// ── Save ───────────────────────────────────────────────────────
+async function handleModalSave() {
+  const ctx = modalContext;
+  if (!ctx) return;
+  const val = id => { const el = document.getElementById(id); return el ? el.value.trim() : ''; };
+  try {
+    if (ctx.type === 'milestone') {
+      await apiPost({ action:'updateMilestone', projectId:ctx.projectId, label:ctx.originalLabel,
+        comment:val('m_comment'), staff:val('m_staff'), status:val('m_status'), date:val('m_date') });
+      showToast('Milestone updated ✓');
+    } else if (ctx.type === 'addMilestone') {
+      await apiPost({ action:'addMilestone', projectId:ctx.projectId, label:val('m_label'),
+        comment:val('m_comment'), staff:val('m_staff'), status:val('m_status'), date:val('m_date') });
+      showToast('Milestone added ✓');
+    } else if (ctx.type === 'project') {
+      await apiPost({ action:'updateProject', id:val('p_id'), name:val('p_name'), phase:val('p_phase'),
+        staff:val('p_staff').split(',').map(s=>s.trim()).filter(Boolean), overall:val('p_overall') });
+      showToast('Project updated ✓');
+    } else if (ctx.type === 'addProject') {
+      await apiPost({ action:'addProject', id:val('p_id'), name:val('p_name'), phase:val('p_phase'),
+        staff:val('p_staff').split(',').map(s=>s.trim()).filter(Boolean),
+        overall:val('p_overall'), firstMilestone:val('p_firstMilestone') });
+      showToast('Project added ✓');
+    } else if (ctx.type === 'simple' || ctx.type === 'addSimple') {
+      await apiPost({ action:'updateOnHold', section:ctx.section,
+        id:val('s_id'), name:val('s_name'),
+        staff:val('s_staff').split(',').map(s=>s.trim()).filter(Boolean),
+        comment:val('s_comment') });
+      showToast('Updated ✓');
+    } else if (ctx.type === 'lodgement') {
+      const histNote = val('l_histNote');
+      const payload = { action:'updateLodgement', id:val('l_id'), name:val('l_name'),
+        staff:val('l_staff').split(',').map(s=>s.trim()).filter(Boolean),
+        authority:val('l_authority'), refNo:val('l_refNo'),
+        status:val('l_status'), latestUpdate:val('l_update') };
+      if (histNote) { payload.histDate = val('l_histDate'); payload.histBy = val('l_histBy'); payload.histNote = histNote; }
+      await apiPost(payload);
+      showToast('Lodgement updated ✓');
+    } else if (ctx.type === 'addLodgement') {
+      await apiPost({ action:'addLodgement', id:val('l_id'), name:val('l_name'),
+        staff:val('l_staff').split(',').map(s=>s.trim()).filter(Boolean),
+        authority:val('l_authority'), refNo:val('l_refNo'),
+        status:val('l_status'), latestUpdate:val('l_update') });
+      showToast('Lodgement added ✓');
+    }
+    closeModal();
+  } catch(e) {
+    showToast('Save failed: ' + e.message, true);
+  }
+}
+
+async function handleModalDelete() {
+  if (!modalContext || !confirm('Delete this item? This cannot be undone.')) return;
+  const ctx = modalContext;
+  try {
+    if (ctx.type === 'project') {
+      await apiPost({ action:'deleteProject', id:ctx.projectId });
+      showToast('Project deleted');
+      closeModal();
+    } else {
+      showToast('To delete on-hold or lodgement items, remove the row directly in Google Sheets.', true);
+    }
+  } catch(e) {
+    showToast('Delete failed: ' + e.message, true);
+  }
+}
+
+// ── Offline demo data ──────────────────────────────────────────
+function loadDemoData() {
+  document.getElementById('setupBanner').style.display = 'none';
+  setSyncStatus('error', 'Offline demo mode — changes will not be saved');
+  DATA = {
+    active:[
+      {id:"23-18",name:"Shilpa Waterfront Apartments",phase:"Concept",staff:["Ashreet","Vijay"],overall:"progress",
+        milestones:[{label:"Concept Design",comment:"2nd concept — garage in front, pool at back. Changes from client sent to VS for review. No feedback yet.",staff:"Ashreet / Vijay",status:"progress"}]},
+      {id:"25-14",name:"ASCO Suva Head Office",phase:"Concept",staff:["Jon","Emosi"],overall:"progress",
+        milestones:[{label:"Concept Design",comment:"Draft Concept 1 issued. R2 given to client 21/01/2025 — no feedback yet.",staff:"Jon / Emosi",status:"done"},
+                    {label:"Revised Concept R3",comment:"Client feedback received. Revised concept issued for HQ space only.",staff:"Jon / Emosi",status:"progress"}]},
+      {id:"14-04B",name:"HGI Suva Foreshore",phase:"Construction",staff:["Emosi","Masi"],overall:"progress",
+        milestones:[{label:"Site Inspections",comment:"Site meeting attendance, reports, RFIs — In Progress.",staff:"",status:"progress"},
+                    {label:"Fire Stair / Door Issues",comment:"Pool tile selection sent to VS for approval. Fixing details for gates (x2).",staff:"Masi / Vijay / Emosi",status:"progress"}]},
+      {id:"23-12",name:"RB Nadawa",phase:"Design",staff:["Emosi"],overall:"progress",
+        milestones:[{label:"Developed Design",comment:"Given to Vijay — ask for any feedback. Emosi to follow up.",staff:"Emosi",status:"progress"}]}
+    ],
+    onHold:[
+      {id:"24-08b",name:"Naviti Resort – Existing Rooms Refurbishment",staff:["Judy","Ashreet","Emosi"],comment:"Concept sent to client, awaiting feedback."},
+      {id:"25-01",name:"Hilton Denarau",staff:["Masi"],comment:"Awaiting feedback from client."}
+    ],
+    standby:[
+      {id:"16-29",name:"MHCC Tower",staff:["Jon","Ashreet"],comment:"Site meeting attendance, reports, RFIs."}
+    ],
+    lodgements:[
+      {id:"18-26",name:"Niranjans Mazda Showroom",staff:["Ashreet","Emosi"],authority:"SCC",refNo:"SCC File 45/923",status:"stuck",
+        latestUpdate:"SCC sent comments 25/11/25. Awaiting resubmission.",history:[{date:"25/11/25",by:"Emosi",note:"Comments received from SCC. Being reviewed."}]}
+    ],
+    staff:[{name:"Ashreet"},{name:"Emosi"},{name:"Eroni"},{name:"Francis"},{name:"Jon"},{name:"Judy"},{name:"Masi"},{name:"Pranay"},{name:"Vijay"}]
+  };
+  buildStaffFilter();
+  buildTabs();
+  updateSummary();
+  render();
+}
+
+window.toggleHistory = toggleHistory;
+window.toggleCard = toggleCard;
+window.handleModalSave = handleModalSave;
+window.handleModalDelete = handleModalDelete;
+window.closeModal = closeModal;
+
+</script>
+</body></html>
