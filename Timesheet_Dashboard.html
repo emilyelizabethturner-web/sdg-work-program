@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SDG Timesheet</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #ffffff; --card: #ffffff; --text: #1a1a1a; --text-2: #6b6b67; --text-3: #b0b0ab;
+    --border: rgba(0,0,0,0.09); --border-hover: rgba(0,0,0,0.18);
+    --accent: #D04A1E; --accent-bg: #fdf1ed;
+    --green: #1a7a3c; --green-bg: #eaf5ee;
+    --amber: #8a5200; --amber-bg: #fff4e0;
+    --red: #b02a2a; --red-bg: #fff0f0;
+    --blue: #0c447c; --blue-bg: #e6f1fb;
+    --purple: #5b21b6; --purple-bg: #f3f0fd;
+    --radius: 10px; --radius-sm: 6px;
+  }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #ffffff; color: var(--text); min-height: 100vh; font-size: 14px; line-height: 1.6; width:100%; }
+
+  .header { background: var(--text); color: #fff; padding: 1.25rem 2rem; display:flex; align-items:center; justify-content:space-between; }
+  .header h1 { font-size: 16px; font-weight: 600; letter-spacing:.02em; }
+  .header h1 span { color: var(--accent); }
+  .header-sub { font-size: 11px; color: rgba(255,255,255,0.5); margin-top:2px; }
+
+  .tabs { display:flex; gap:0; background:var(--text); padding:0 2rem; border-bottom:2px solid var(--accent); }
+  .tab { padding:10px 20px; font-size:12px; cursor:pointer; color:rgba(255,255,255,0.5); border-bottom:2px solid transparent; margin-bottom:-2px; transition:all .15s; letter-spacing:.04em; text-transform:uppercase; }
+  .tab:hover { color:rgba(255,255,255,0.8); }
+  .tab.active { color:#fff; border-bottom-color:var(--accent); }
+
+  .page { max-width: 100%; margin:0 auto; padding:2rem 3rem 4rem; }
+  .card { background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:1.5rem; margin-bottom:1rem; box-shadow: 0 1px 4px rgba(0,0,0,0.05); }
+  .card-title { font-size:13px; font-weight:600; color:var(--text); margin-bottom:1rem; padding-bottom:.5rem; border-bottom:0.5px solid var(--border); letter-spacing:.03em; }
+
+  .form-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:12px; }
+  .form-row-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin-bottom:12px; }
+  .form-group { display:flex; flex-direction:column; gap:4px; }
+  label { font-size:11px; font-weight:600; color:var(--text-2); text-transform:uppercase; letter-spacing:.04em; }
+  input, select, textarea { padding:8px 10px; border:1px solid var(--border); border-radius:var(--radius-sm); background:#f8fafc; color:var(--text); font-size:13px; font-family:inherit; outline:none; transition:border-color .15s; width:100%; }
+  input:focus, select:focus, textarea:focus { border-color:var(--accent); }
+  textarea { resize:vertical; min-height:60px; }
+
+  .entry-table { width:100%; border-collapse:collapse; margin-bottom:1rem; font-size:13px; }
+  .entry-table th { font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:.05em; color:var(--text-3); padding:6px 8px; text-align:left; border-bottom:0.5px solid var(--border); }
+  .entry-table td { padding:5px 4px; border-bottom:0.5px solid var(--border); vertical-align:middle; }
+  .entry-table tr:last-child td { border-bottom:none; }
+  .entry-table input, .entry-table select { padding:6px 8px; font-size:12px; background:#f8fafc; }
+  .entry-table input[type=number] { width:70px; text-align:center; }
+
+  .btn { padding:8px 20px; border-radius:var(--radius-sm); font-size:12px; cursor:pointer; border:0.5px solid var(--border); background:var(--card); color:var(--text); font-family:inherit; transition:all .15s; letter-spacing:.03em; }
+  .btn:hover { background:var(--bg); }
+  .btn-primary { background:var(--text); color:#fff; border-color:var(--text); }
+  .btn-primary:hover { background:#333; }
+  .btn-accent { background:var(--accent); color:#fff; border-color:var(--accent); }
+  .btn-accent:hover { opacity:.9; }
+  .btn-sm { padding:4px 10px; font-size:11px; }
+  .btn-danger { color:var(--red); border-color:var(--red-bg); background:var(--red-bg); }
+  .btn-leave { background:var(--purple-bg); color:var(--purple); border-color:var(--purple); }
+
+  .hours-bar { display:flex; align-items:center; gap:12px; padding:10px 14px; background:#f8fafc; border:1px solid var(--border); border-radius:var(--radius-sm); margin-bottom:1rem; flex-wrap:wrap; }
+  .hours-pill { font-size:12px; padding:4px 12px; border-radius:99px; font-weight:600; }
+  .hours-normal { background:var(--green-bg); color:var(--green); }
+  .hours-over { background:var(--red-bg); color:var(--red); }
+  .hours-label { font-size:11px; color:var(--text-2); }
+
+  .badge { font-size:10px; padding:2px 8px; border-radius:99px; font-weight:600; white-space:nowrap; }
+  .badge-ot { background:var(--amber-bg); color:var(--amber); }
+  .badge-ok { background:var(--green-bg); color:var(--green); }
+  .badge-leave { background:var(--purple-bg); color:var(--purple); }
+  .badge-missing { background:var(--red-bg); color:var(--red); }
+
+  .summary-table { width:100%; border-collapse:collapse; font-size:12px; table-layout:fixed; }
+  .summary-table th { font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:.05em; color:var(--text-3); padding:8px 10px; text-align:left; border-bottom:1px solid var(--border); background:#f8fafc; white-space:nowrap; }
+  .summary-table td { padding:8px 10px; border-bottom:0.5px solid var(--border); word-wrap:break-word; }
+  .summary-table td.date-col { white-space:nowrap; min-width:100px; }
+  .summary-table td.jobref-col { white-space:nowrap; min-width:80px; font-weight:600; }
+  .summary-table td.staff-col { white-space:nowrap; min-width:90px; }
+  .summary-table td.hours-col { white-space:nowrap; min-width:60px; text-align:right; }
+  .summary-table td.task-col { min-width:200px; }
+  .summary-table tr:hover td { background:#f8fafc; }
+  .summary-table .total-row td { font-weight:600; background:#f8fafc; border-top:1px solid var(--border); }
+
+  .tracker-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(140px,1fr)); gap:10px; margin-top:.5rem; }
+  .tracker-card { border-radius:var(--radius-sm); padding:12px 14px; border:0.5px solid var(--border); text-align:center; }
+  .tracker-card.submitted { background:var(--green-bg); border-color:var(--green); }
+  .tracker-card.leave { background:var(--purple-bg); border-color:var(--purple); }
+  .tracker-card.missing { background:var(--red-bg); border-color:var(--red); }
+  .tracker-name { font-size:13px; font-weight:600; margin-bottom:4px; }
+  .tracker-status { font-size:11px; }
+  .tracker-card.submitted .tracker-name { color:var(--green); }
+  .tracker-card.submitted .tracker-status { color:var(--green); }
+  .tracker-card.leave .tracker-name { color:var(--purple); }
+  .tracker-card.leave .tracker-status { color:var(--purple); }
+  .tracker-card.missing .tracker-name { color:var(--red); }
+  .tracker-card.missing .tracker-status { color:var(--red); }
+
+  .filters { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:1rem; align-items:center; }
+  .filters select, .filters input[type=text] { flex:1; min-width:140px; }
+
+  .stats-bar { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-bottom:1.5rem; width:100%; }
+  .stat { background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:14px 16px; box-shadow: 0 1px 4px rgba(0,0,0,0.05); }
+  .stat-num { font-size:26px; font-weight:600; color:var(--text); line-height:1; }
+  .stat-lbl { font-size:10px; color:var(--text-2); margin-top:4px; text-transform:uppercase; letter-spacing:.05em; }
+
+  .ot-notice { background:var(--amber-bg); border:0.5px solid var(--amber); border-radius:var(--radius-sm); padding:8px 12px; font-size:12px; color:var(--amber); margin-bottom:1rem; display:none; }
+  .ot-notice.show { display:block; }
+
+  .toast { position:fixed; bottom:1.5rem; right:1.5rem; background:var(--text); color:#fff; padding:10px 18px; border-radius:var(--radius-sm); font-size:13px; z-index:2000; opacity:0; transform:translateY(8px); transition:all .2s; pointer-events:none; }
+  .toast.show { opacity:1; transform:translateY(0); }
+  .toast.error { background:var(--red); }
+  .toast.success { background:var(--green); }
+
+  .sync-bar { display:flex; align-items:center; gap:8px; font-size:11px; color:var(--text-3); margin-bottom:.75rem; }
+  .sync-dot { width:7px; height:7px; border-radius:50%; background:var(--green); flex-shrink:0; }
+  .sync-dot.syncing { background:var(--amber); animation:pulse .8s infinite; }
+  .sync-dot.error { background:var(--red); }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+
+  .section-label { font-size:10px; font-weight:600; color:var(--text-3); text-transform:uppercase; letter-spacing:.07em; padding:.75rem 0 .4rem; }
+
+  .absent-panel { background:var(--purple-bg); border:0.5px solid var(--purple); border-radius:var(--radius-sm); padding:12px 14px; margin-top:10px; display:none; }
+  .absent-panel.show { display:block; }
+  .absent-panel-title { font-size:11px; font-weight:600; color:var(--purple); text-transform:uppercase; letter-spacing:.05em; margin-bottom:8px; }
+  .absent-row { display:flex; gap:10px; align-items:flex-end; flex-wrap:wrap; }
+  .absent-row .form-group { flex:1; min-width:160px; }
+
+  @media (max-width:600px) {
+    .form-row, .form-row-3 { grid-template-columns:1fr; }
+    .stats-bar { grid-template-columns:repeat(2,1fr); }
+    .tracker-grid { grid-template-columns:repeat(2,1fr); }
+    .leave-types { grid-template-columns:1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <h1>Sharma Design Group — <span>Timesheets</span></h1>
+    <div class="header-sub">Daily time entry · Leave management · Project billing</div>
+  </div>
+</div>
+
+<div class="tabs" id="tabs">
+  <div class="tab active" onclick="switchTab('entry')">Enter Timesheet</div>
+  <div class="tab" onclick="switchTab('tracker')">Daily Tracker</div>
+  <div class="tab" onclick="switchTab('summary')">Summary &amp; Reports</div>
+</div>
+
+<!-- ── Entry Tab ──────────────────────────────────────────── -->
+<div id="entryView" class="page">
+  <div class="sync-bar">
+    <span class="sync-dot" id="syncDot"></span>
+    <span id="syncText">Ready</span>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Daily Timesheet Entry</div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Staff Name</label>
+        <select id="staffName" onchange="onStaffChange()">
+          <option value="">— Select staff —</option>
+          <option>Ashreet</option><option>Emosi</option><option>Eroni</option>
+          <option>Francis</option><option>Jonathan</option>
+          <option>Masi</option><option>Pranay</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Date</label>
+        <input type="date" id="entryDate">
+      </div>
+    </div>
+    <div class="form-row" style="margin-top:8px;margin-bottom:0">
+      <div class="form-group">
+        <label>Attendance</label>
+        <select id="attendanceStatus" onchange="onAttendanceChange()">
+          <option value="present">Present</option>
+          <option value="absent">Absent</option>
+        </select>
+      </div>
+    </div>
+    <div class="absent-panel" id="absentPanel">
+      <div class="absent-panel-title">Leave Details</div>
+      <div class="absent-row">
+        <div class="form-group">
+          <label>Leave Type</label>
+          <select id="leaveTypeInline">
+            <option value="">— Select leave type —</option>
+            <option>Annual Leave</option>
+            <option>Sick Leave</option>
+            <option>Personal Leave</option>
+            <option>Bereavement Leave</option>
+            <option>Family Leave</option>
+            <option>Maternity Leave</option>
+            <option>Paternity Leave</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Notes (optional)</label>
+          <input type="text" id="leaveNotesInline" placeholder="e.g. doctor's appointment">
+        </div>
+        <div style="padding-bottom:1px">
+          <button class="btn btn-accent" onclick="submitLeaveInline()">Record Absence</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" id="timeEntriesCard">
+    <div class="card-title">Time Entries</div>
+    <div class="hours-bar" id="hoursBar">
+      <span class="hours-label">Total hours today:</span>
+      <span class="hours-pill hours-normal" id="totalHoursDisplay">0.0 hrs</span>
+      <span class="hours-label" id="otLabel" style="display:none">Standard: 7.5 hrs &nbsp;|&nbsp; Overtime: <strong id="otHours">0.0</strong> hrs</span>
+    </div>
+    <div class="ot-notice" id="otNotice">⚠ Total hours exceed 7.5 — overtime will be flagged for authorisation.</div>
+    <table class="entry-table" id="entryTable">
+      <thead>
+        <tr>
+          <th style="width:110px">Start Time</th>
+          <th style="width:110px">End Time</th>
+          <th style="width:100px">Job Ref</th>
+          <th>Task Description</th>
+          <th style="width:70px">Hours</th>
+          <th style="width:36px"></th>
+        </tr>
+      </thead>
+      <tbody id="entryRows"></tbody>
+    </table>
+    <button class="btn btn-sm" onclick="addRow()">+ Add row</button>
+  </div>
+
+  <div class="card" id="authCard">
+    <div class="card-title">Authorisation</div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Authorised by</label>
+        <input type="text" id="authorisedBy" placeholder="e.g. Vijay Sharma">
+      </div>
+      <div class="form-group">
+        <label>Comments</label>
+        <input type="text" id="comments" placeholder="Optional comments">
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:.5rem">
+      <button class="btn" onclick="clearForm()">Clear</button>
+      <button class="btn btn-accent" onclick="submitTimesheet()">Submit Timesheet</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Tracker Tab ────────────────────────────────────────── -->
+<div id="trackerView" class="page" style="display:none">
+  <div class="sync-bar">
+    <span class="sync-dot" id="syncDot3"></span>
+    <span id="syncText3">Loading...</span>
+    <button class="btn btn-sm" style="margin-left:auto" onclick="loadTracker()">↻ Refresh</button>
+  </div>
+
+  <div class="card">
+    <div class="card-title" id="trackerTitle">Daily Submission Tracker</div>
+    <div style="display:flex;gap:8px;margin-bottom:1rem;align-items:center">
+      <input type="date" id="trackerDate" onchange="renderTracker()" style="width:180px">
+      <span style="font-size:11px;color:var(--text-3)">Change date to check any day</span>
+    </div>
+    <div class="tracker-grid" id="trackerGrid"></div>
+  </div>
+
+  <div class="card" id="trackerLeaveCard" style="display:none">
+    <div class="card-title">Leave Submissions</div>
+    <table class="summary-table" id="trackerLeaveTable">
+      <thead><tr><th>Staff</th><th>Date</th><th>Leave Type</th><th>Notes</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ── Summary Tab ────────────────────────────────────────── -->
+<div id="summaryView" class="page" style="display:none">
+  <div class="sync-bar">
+    <span class="sync-dot" id="syncDot2"></span>
+    <span id="syncText2">Loading...</span>
+    <button class="btn btn-sm" style="margin-left:auto" onclick="loadSummary()">↻ Refresh</button>
+  </div>
+
+  <div class="stats-bar" id="statsBar">
+    <div class="stat"><div class="stat-num" id="statTotalEntries">—</div><div class="stat-lbl">Total Entries</div></div>
+    <div class="stat"><div class="stat-num" id="statTotalHours">—</div><div class="stat-lbl">Total Hours</div></div>
+    <div class="stat"><div class="stat-num" id="statOTHours">—</div><div class="stat-lbl">Overtime Hours</div></div>
+    <div class="stat"><div class="stat-num" id="statProjects">—</div><div class="stat-lbl">Number of Projects</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Filter &amp; Search</div>
+    <div class="filters">
+      <select id="filterStaff" onchange="renderSummary()">
+        <option value="">All staff</option>
+        <option>Ashreet</option><option>Emosi</option><option>Eroni</option>
+        <option>Francis</option><option>Jonathan</option>
+        <option>Masi</option><option>Pranay</option>
+      </select>
+      <input type="text" id="filterJob" placeholder="Filter by job ref..." oninput="renderSummary()" style="flex:1;min-width:120px">
+      <input type="date" id="filterFrom" onchange="renderSummary()">
+      <input type="date" id="filterTo" onchange="renderSummary()">
+      <select id="filterView" onchange="renderSummary()">
+        <option value="detail">Detailed view</option>
+        <option value="byproject">By project</option>
+        <option value="bystaff">By staff</option>
+      </select>
+    </div>
+  </div>
+  <div id="summaryContent"></div>
+</div>
+
+
+<div class="toast" id="toast"></div>
+
+<script>
+const PROJECT_NAMES = {
+  '23-18': 'Shilpa Waterfront Apartments',
+  '25-18': 'Qomate Apartments, Wailoku',
+  '25-14': 'ASCO Suva Head Office',
+  '25-19': 'Korean Embassy',
+  '14-04B': 'HGI Suva Foreshore',
+  '20-10': 'Wananavu Resort',
+  '25-07': 'CWM Hospital Acute Ward',
+  '25-02': 'Busa Land',
+  '22-05': 'Arshad Residence Lekutu St. & Rewa St.',
+  '24-02': 'RB Knolly St. Apartments',
+  '19-06': 'TappooCity Nadi Back Rd.',
+  '23-16': 'Tubemakers Industrial Development',
+  '13-24': 'TISI Nadi Sangam Temple',
+  '24-13': 'Sami Apartments, Northern Press Rd Nadi',
+  '07-26': 'Tabua Towers',
+  '16-10': 'Tavua Temple Refurbishment',
+  '26-01': 'Bobby Raniga Gym Extension',
+  '24-07': 'Raniga Villa Lot 7 Peninsula Denarau',
+  '13-02': 'MH Nausori',
+  '20-09': 'Airport Services Apartment',
+  '14-04': 'Drain / Construction Details',
+  '15-38': 'Sales Office',
+  '25-13': 'DCL Building',
+  '13-22': 'Asbuilts Project',
+  '14-18': 'DCL Masterplan',
+  '27-05': 'CWM Maternity / Sewer Line',
+  '04-44': 'Print / Admin',
+  'A':    'Admin',
+  'A1':   'Staff Meeting',
+  'V':    'Business Development / Site Visit',
+  'C':    'Training / Familiarization',
+  'EOI-26-02': 'EOI - FPSP Tender',
+  'EOI-26-04': 'EOI - Tender 04',
+  'EOI-26-05': 'EOI - FNU Buildings Tender',
+  'EOI-26-06': 'EOI - FNU VC & Admin Tender',
+  'EOI-26-07': 'EOI - FNU Humanitarian Tender',
+  'EOI-26-08': 'EOI - SDG Portfolio & CV',
+  'EOI-26-09': 'EOI - Fee Proposal',
+  'EOI-25-20': 'EOI - FRCS Award',
+  'EOI-25-24': 'EOI - USP Tender',
+};
+
+function normaliseRef(ref) {
+  if (!ref) return '';
+  let r = ref.toString().trim();
+  // If 4 digits with no dash e.g. 2507 -> 25-07
+  if (/^\d{4}$/.test(r)) r = r.slice(0,2) + '-' + r.slice(2);
+  // If 3 digits e.g. 726 -> 07-26
+  if (/^\d{3}$/.test(r)) r = '0' + r.slice(0,1) + '-' + r.slice(1);
+  return r;
+}
+
+function formatJobRef(input) {
+  input.value = normaliseRef(input.value);
+}
+
+function getProjectName(ref) {
+  if (!ref) return '';
+  const norm = normaliseRef(ref.toString().trim());
+  return PROJECT_NAMES[norm] || PROJECT_NAMES[ref.toString().trim()] || ref;
+}
+
+const SHEET_URL = 'https://script.google.com/macros/s/AKfycbwKb1NAg8zjLqTEgFHZqUv99QOUf8NHcp0tvcCmJlZqAe9a0FkMTnhuzsels5aU4BR3IA/exec';
+const STANDARD_HOURS = 7.5;
+const ALL_STAFF = ['Ashreet','Emosi','Eroni','Francis','Jonathan','Masi','Pranay'];
+
+const TIME_SLOTS = [
+  '8.30 - 9.30','9.30 - 10.30','10.30 - 11.30',
+  '11.30 - 12.30','12.30 - 1.00',
+  '2.00 - 3.00','3.00 - 4.00','4.00 - 5.00','Overtime'
+];
+const SLOT_HOURS = {
+  '8.30 - 9.30':1,'9.30 - 10.30':1,'10.30 - 11.30':1,
+  '11.30 - 12.30':1,'12.30 - 1.00':0.5,
+  '2.00 - 3.00':1,'3.00 - 4.00':1,'4.00 - 5.00':1,'Overtime':0
+};
+
+let ALL_ENTRIES = [];
+let ALL_LEAVE = [];
+
+// ── Boot ──────────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', () => {
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('entryDate').value = today;
+  document.getElementById('trackerDate').value = today;
+  addRow(); addRow(); addRow();
+  loadSummary();
+});
+
+function todayStr() { return new Date().toISOString().split('T')[0]; }
+
+// ── Attendance toggle ─────────────────────────────────────
+function onStaffChange() { /* reserved for future use */ }
+
+function onAttendanceChange() {
+  const status = document.getElementById('attendanceStatus').value;
+  const panel = document.getElementById('absentPanel');
+  const timeCard = document.getElementById('timeEntriesCard');
+  const authCard = document.getElementById('authCard');
+  if (status === 'absent') {
+    panel.classList.add('show');
+    timeCard.style.display = 'none';
+    authCard.style.display = 'none';
+  } else {
+    panel.classList.remove('show');
+    timeCard.style.display = 'block';
+    authCard.style.display = 'block';
+  }
+}
+
+// ── Inline leave submit ───────────────────────────────────
+async function submitLeaveInline() {
+  const staff = document.getElementById('staffName').value;
+  const date = document.getElementById('entryDate').value;
+  const leaveType = document.getElementById('leaveTypeInline').value;
+  const notes = document.getElementById('leaveNotesInline').value;
+  if (!staff) return showToast('Please select a staff name', true);
+  if (!date) return showToast('Please select a date', true);
+  if (!leaveType) return showToast('Please select a leave type', true);
+
+  setSyncStatus('syncing', 'Submitting...');
+  try {
+    await jsonpPost({action:'submitLeave', staff, date, leaveType, notes});
+
+    // ── Optimistic local update ───────────────────────────
+    ALL_LEAVE.push({ date, staff, leaveType, notes, submitted: new Date().toLocaleString() });
+
+    showToast(leaveType + ' recorded for ' + staff + ' ✓', false, true);
+    setSyncStatus('ok', 'Submitted at ' + new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}));
+
+    // Reset form
+    document.getElementById('attendanceStatus').value = 'present';
+    onAttendanceChange();
+    document.getElementById('staffName').value = '';
+    document.getElementById('leaveTypeInline').value = '';
+    document.getElementById('leaveNotesInline').value = '';
+
+    // Immediately refresh visible tabs
+    renderTracker();
+    renderSummary();
+  } catch(e) {
+    setSyncStatus('error', 'Submit failed');
+    showToast('Submit failed: ' + e.message, true);
+  }
+}
+
+// ── Tabs ──────────────────────────────────────────────────
+function switchTab(tab) {
+  document.querySelectorAll('.tab').forEach((t,i) => {
+    t.classList.toggle('active', (tab==='entry'&&i===0)||(tab==='tracker'&&i===1)||(tab==='summary'&&i===2));
+  });
+  document.getElementById('entryView').style.display = tab==='entry' ? 'block' : 'none';
+  document.getElementById('trackerView').style.display = tab==='tracker' ? 'block' : 'none';
+  document.getElementById('summaryView').style.display = tab==='summary' ? 'block' : 'none';
+  if (tab==='tracker') renderTracker();
+  if (tab==='summary') renderSummary();
+}
+
+// ── Entry rows ────────────────────────────────────────────
+function addRow() {
+  const tbody = document.getElementById('entryRows');
+  const tr = document.createElement('tr');
+  const timeOpts = generateTimeOptions();
+  tr.innerHTML = `
+    <td><select style="width:100%;font-size:12px;padding:5px 4px;border:0.5px solid var(--border);border-radius:4px;background:var(--bg);color:var(--text)" onchange="onTimeChange(this)">
+      <option value="">— start —</option>${timeOpts}
+    </select></td>
+    <td><select style="width:100%;font-size:12px;padding:5px 4px;border:0.5px solid var(--border);border-radius:4px;background:var(--bg);color:var(--text)" onchange="onTimeChange(this)">
+      <option value="">— end —</option>${timeOpts}
+    </select></td>
+    <td><input type="text" placeholder="e.g. 25-07" style="width:100%" oninput="calcHours()" onblur="formatJobRef(this)" list="projectList"></td>
+    <td><input type="text" placeholder="Task description" style="width:100%" oninput="calcHours()"></td>
+    <td><input type="number" min="0" max="24" step="0.5" placeholder="0" style="background:#f0f4f8;" readonly></td>
+    <td><button class="btn btn-sm btn-danger" onclick="removeRow(this)">✕</button></td>`;
+  tbody.appendChild(tr);
+}
+
+function generateTimeOptions() {
+  const times = [];
+  for (let h = 7; h <= 19; h++) {
+    const hh = h % 12 === 0 ? 12 : h % 12;
+    const ampm = h < 12 ? 'am' : 'pm';
+    times.push(`<option value="${h}.00">${hh}:00 ${ampm}</option>`);
+    if (h < 19) times.push(`<option value="${h}.50">${hh}:30 ${ampm}</option>`);
+  }
+  return times.join('');
+}
+
+function onTimeChange(sel) {
+  const row = sel.closest('tr');
+  const selects = row.querySelectorAll('select');
+  const startVal = parseFloat(selects[0].value);
+  const endVal = parseFloat(selects[1].value);
+  const hoursInput = row.querySelector('input[type=number]');
+  if (!isNaN(startVal) && !isNaN(endVal) && endVal > startVal) {
+    // Convert .50 representation to actual decimal hours
+    const toDecimal = v => Math.floor(v) + (v % 1 >= 0.5 ? 0.5 : 0);
+    const hours = toDecimal(endVal) - toDecimal(startVal);
+    hoursInput.value = hours > 0 ? hours.toFixed(1) : '';
+  } else {
+    hoursInput.value = '';
+  }
+  calcHours();
+}
+
+function removeRow(btn) { btn.closest('tr').remove(); calcHours(); }
+
+function onSlotChange(sel) {
+  const row = sel.closest('tr');
+  const hoursInput = row.querySelectorAll('input[type=number]')[0];
+  const slot = sel.value;
+  if (slot && SLOT_HOURS[slot] !== undefined) hoursInput.value = SLOT_HOURS[slot] || '';
+  calcHours();
+}
+
+function calcHours() {
+  const inputs = document.querySelectorAll('#entryRows input[type=number]');
+  let total = 0;
+  inputs.forEach(i => { total += parseFloat(i.value)||0; });
+  const ot = Math.max(0, total - STANDARD_HOURS);
+  const display = document.getElementById('totalHoursDisplay');
+  display.textContent = total.toFixed(1) + ' hrs';
+  display.className = 'hours-pill ' + (total > STANDARD_HOURS ? 'hours-over' : 'hours-normal');
+  document.getElementById('otNotice').classList.toggle('show', total > STANDARD_HOURS);
+  document.getElementById('otLabel').style.display = total > STANDARD_HOURS ? 'inline' : 'none';
+  document.getElementById('otHours').textContent = ot.toFixed(1);
+}
+
+// ── Submit timesheet ──────────────────────────────────────
+async function submitTimesheet() {
+  const staff = document.getElementById('staffName').value;
+  const date = document.getElementById('entryDate').value;
+  const authorised = document.getElementById('authorisedBy').value;
+  const comments = document.getElementById('comments').value;
+  if (!staff) return showToast('Please select a staff name', true);
+  if (!date) return showToast('Please select a date', true);
+
+  const rows = [...document.querySelectorAll('#entryRows tr')];
+  const entries = [];
+  let total = 0;
+  rows.forEach(tr => {
+    const selects = tr.querySelectorAll('select');
+    const inputs = tr.querySelectorAll('input');
+    const startTime = selects[0] ? selects[0].options[selects[0].selectedIndex]?.text : '';
+    const endTime = selects[1] ? selects[1].options[selects[1].selectedIndex]?.text : '';
+    const timeSlot = (startTime && startTime !== '— start —' && endTime && endTime !== '— end —') ? startTime + ' - ' + endTime : '';
+    const jobRef = inputs[0] ? inputs[0].value.trim() : '';
+    const task = inputs[1] ? inputs[1].value.trim() : '';
+    const hours = parseFloat(inputs[2] ? inputs[2].value : 0)||0;
+    if (jobRef && hours > 0) { entries.push({timeSlot, jobRef: normaliseRef(jobRef), task, hours}); total += hours; }
+  });
+  if (!entries.length) return showToast('Please add at least one time entry', true);
+
+  const ot = Math.max(0, total - STANDARD_HOURS);
+  setSyncStatus('syncing', 'Submitting...');
+  try {
+    await jsonpPost({action:'submitTimesheet', staff, date, entries, totalHours:total, overtimeHours:ot, authorisedBy:authorised, comments});
+
+    // ── Optimistic local update — push new entries into memory immediately ──
+    let hoursUsed = 0;
+    entries.forEach(entry => {
+      hoursUsed += entry.hours;
+      const entryOT = hoursUsed > STANDARD_HOURS ? Math.min(entry.hours, hoursUsed - STANDARD_HOURS) : 0;
+      ALL_ENTRIES.push({
+        date, staff,
+        timeSlot: entry.timeSlot || '',
+        jobRef: normaliseRef(entry.jobRef),
+        task: entry.task || '',
+        hours: entry.hours,
+        overtimeHours: entryOT,
+        comments
+      });
+    });
+
+    showToast('Timesheet submitted ✓', false, true);
+    setSyncStatus('ok', 'Submitted at ' + new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}));
+    clearForm();
+
+    // ── Immediately refresh both tabs with new local data ───────────────────
+    renderSummary();
+    renderTracker();
+
+  } catch(e) {
+    setSyncStatus('error', 'Submit failed');
+    showToast('Submit failed: ' + e.message, true);
+  }
+}
+
+function clearForm() {
+  document.getElementById('staffName').value = '';
+  document.getElementById('entryDate').value = todayStr();
+  document.getElementById('authorisedBy').value = '';
+  document.getElementById('comments').value = '';
+  document.getElementById('entryRows').innerHTML = '';
+  document.getElementById('attendanceStatus').value = 'present';
+  onAttendanceChange();
+  addRow(); addRow(); addRow();
+  calcHours();
+}
+
+// ── Tracker ───────────────────────────────────────────────
+async function loadTracker() {
+  setSyncStatus3('syncing', 'Loading...');
+  try {
+    const data = await jsonpGet('getTimesheets');
+    ALL_ENTRIES = data.entries || [];
+    ALL_LEAVE = data.leave || [];
+    renderTracker();
+    setSyncStatus3('ok', 'Last synced ' + new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}));
+  } catch(e) {
+    setSyncStatus3('error', 'Could not load data');
+  }
+}
+
+function renderTracker() {
+  const date = document.getElementById('trackerDate').value || todayStr();
+  document.getElementById('trackerTitle').textContent = 'Daily Submission Tracker — ' + formatDate(date);
+
+  const submitted = new Set(ALL_ENTRIES.filter(e => e.date === date).map(e => e.staff));
+  const onLeave = ALL_LEAVE.filter(e => e.date === date);
+  const onLeaveSet = new Set(onLeave.map(e => e.staff));
+
+  const grid = document.getElementById('trackerGrid');
+  grid.innerHTML = ALL_STAFF.map(s => {
+    const leave = onLeave.find(l => l.staff === s);
+    if (leave) return `<div class="tracker-card leave"><div class="tracker-name">${s}</div><div class="tracker-status">${leave.leaveType}</div></div>`;
+    if (submitted.has(s)) {
+      const hrs = ALL_ENTRIES.filter(e => e.date===date && e.staff===s).reduce((sum,e) => sum+(parseFloat(e.hours)||0), 0);
+      return `<div class="tracker-card submitted"><div class="tracker-name">${s}</div><div class="tracker-status">✓ Submitted · ${hrs.toFixed(1)}h</div></div>`;
+    }
+    return `<div class="tracker-card missing"><div class="tracker-name">${s}</div><div class="tracker-status">Not submitted</div></div>`;
+  }).join('');
+
+  // Leave table
+  const leaveCard = document.getElementById('trackerLeaveCard');
+  if (onLeave.length) {
+    leaveCard.style.display = 'block';
+    const tbody = document.querySelector('#trackerLeaveTable tbody');
+    tbody.innerHTML = onLeave.map(l => `
+      <tr><td>${l.staff}</td><td>${l.date}</td><td><span class="badge badge-leave">${l.leaveType}</span></td><td style="color:var(--text-2)">${l.notes||''}</td></tr>`
+    ).join('');
+  } else {
+    leaveCard.style.display = 'none';
+  }
+}
+
+function formatDisplayDate(d) {
+  if (!d) return '';
+  const dt = new Date(d + 'T00:00:00');
+  return dt.toLocaleDateString('en-GB', {day:'2-digit', month:'short', year:'numeric'});
+}
+
+function formatDate(d) {
+  if (!d) return '';
+  const dt = new Date(d + 'T00:00:00');
+  return dt.toLocaleDateString('en-FJ', {weekday:'long', day:'numeric', month:'long', year:'numeric'});
+}
+
+// ── Summary ───────────────────────────────────────────────
+async function loadSummary() {
+  setSyncStatus2('syncing', 'Loading...');
+  try {
+    const data = await jsonpGet('getTimesheets');
+    ALL_ENTRIES = data.entries || [];
+    ALL_LEAVE = data.leave || [];
+    renderSummary();
+    setSyncStatus2('ok', 'Last synced ' + new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}));
+  } catch(e) {
+    setSyncStatus2('error', 'Could not load data');
+    renderSummary(); // still render with whatever we have
+  }
+}
+
+function renderSummary() {
+  const fStaff = document.getElementById('filterStaff').value;
+  const fJob = document.getElementById('filterJob').value.toLowerCase();
+  const fFrom = document.getElementById('filterFrom').value;
+  const fTo = document.getElementById('filterTo').value;
+  const view = document.getElementById('filterView').value;
+
+  let entries = ALL_ENTRIES.filter(e => {
+    if (fStaff && e.staff !== fStaff) return false;
+    if (fJob && !(e.jobRef||'').toLowerCase().includes(fJob)) return false;
+    if (fFrom && e.date < fFrom) return false;
+    if (fTo && e.date > fTo) return false;
+    return true;
+  });
+
+  const totalHours = entries.reduce((s,e) => s+(parseFloat(e.hours)||0), 0);
+  const otHours = entries.reduce((s,e) => s+(parseFloat(e.overtimeHours)||0), 0);
+  const projects = new Set(entries.map(e => e.jobRef)).size;
+  document.getElementById('statTotalEntries').textContent = entries.length;
+  document.getElementById('statTotalHours').textContent = totalHours.toFixed(1);
+  document.getElementById('statOTHours').textContent = otHours.toFixed(1);
+  document.getElementById('statProjects').textContent = projects;
+
+  let html = '';
+  if (view==='detail') html = renderDetailTable(entries);
+  else if (view==='byproject') html = renderByProject(entries);
+  else if (view==='bystaff') html = renderByStaff(entries);
+
+  document.getElementById('summaryContent').innerHTML = html || '<div style="text-align:center;color:var(--text-3);padding:2rem">No entries found.</div>';
+}
+
+function renderDetailTable(entries) {
+  if (!entries.length) return '';
+  const sorted = entries.slice().sort((a,b) => b.date.localeCompare(a.date));
+  return `<div class="card"><div class="card-title">Detailed Entries</div>
+    <table class="summary-table">
+      <thead><tr>
+          <th style="width:110px">Date</th>
+          <th style="width:90px">Staff</th>
+          <th style="width:90px">Time Slot</th>
+          <th style="width:80px">Job Ref</th>
+          <th>Task Description</th>
+          <th style="width:65px;text-align:right">Hours</th>
+          <th style="width:65px;text-align:right">OT</th>
+        </tr></thead>
+      <tbody>${sorted.map(e => `
+        <tr>
+          <td style="white-space:nowrap;font-size:12px">${e.date}</td>
+          <td style="white-space:nowrap">${e.staff}</td>
+          <td style="color:var(--text-2);white-space:nowrap;font-size:11px">${e.timeSlot||''}</td>
+          <td style="white-space:nowrap"><strong>${e.jobRef}</strong></td>
+          <td style="color:var(--text-2);font-size:12px">${e.task||''}</td>
+          <td style="text-align:right;white-space:nowrap">${parseFloat(e.hours).toFixed(1)}</td>
+          <td style="text-align:right;white-space:nowrap">${parseFloat(e.overtimeHours||0)>0?`<span class="badge badge-ot">${parseFloat(e.overtimeHours).toFixed(1)} OT</span>`:''}</td>
+        </tr>`).join('')}
+      </tbody>
+    </table></div>`;
+}
+
+function renderByProject(entries) {
+  if (!entries.length) return '';
+  const projects = {};
+  entries.forEach(e => {
+    if (!projects[e.jobRef]) projects[e.jobRef] = {total:0, ot:0, staff:{}};
+    projects[e.jobRef].total += parseFloat(e.hours)||0;
+    projects[e.jobRef].ot += parseFloat(e.overtimeHours)||0;
+    projects[e.jobRef].staff[e.staff] = (projects[e.jobRef].staff[e.staff]||0) + (parseFloat(e.hours)||0);
+  });
+  const sorted = Object.entries(projects).sort((a,b) => b[1].total - a[1].total);
+  return `<div class="card"><div class="card-title">Hours by Project</div>
+    <table class="summary-table">
+      <thead><tr><th>Job Ref</th><th>Project Name</th><th>Total Hours</th><th>Overtime</th><th>Staff Breakdown</th></tr></thead>
+      <tbody>${sorted.map(([job,p]) => `
+        <tr>
+          <td><strong>${job}</strong></td>
+          <td style="color:var(--text-2);font-size:12px">${getProjectName(job)}</td>
+          <td>${p.total.toFixed(1)} hrs</td>
+          <td>${p.ot>0?`<span class="badge badge-ot">${p.ot.toFixed(1)} OT</span>`:'—'}</td>
+          <td style="color:var(--text-2);font-size:11px">${Object.entries(p.staff).map(([s,h])=>`${s}: ${h.toFixed(1)}h`).join(' &nbsp;|&nbsp; ')}</td>
+        </tr>`).join('')}
+        <tr class="total-row"><td>TOTAL</td><td></td><td>${sorted.reduce((s,[,p])=>s+p.total,0).toFixed(1)} hrs</td><td></td><td></td></tr>
+      </tbody>
+    </table></div>`;
+}
+
+function renderByStaff(entries) {
+  if (!entries.length) return '';
+  const staff = {};
+  entries.forEach(e => {
+    if (!staff[e.staff]) staff[e.staff] = {total:0, ot:0, projects:{}};
+    staff[e.staff].total += parseFloat(e.hours)||0;
+    staff[e.staff].ot += parseFloat(e.overtimeHours)||0;
+    staff[e.staff].projects[e.jobRef] = (staff[e.staff].projects[e.jobRef]||0) + (parseFloat(e.hours)||0);
+  });
+  const sorted = Object.entries(staff).sort((a,b) => b[1].total - a[1].total);
+  return `<div class="card"><div class="card-title">Hours by Staff Member</div>
+    <table class="summary-table">
+      <thead><tr><th>Staff</th><th>Total Hours</th><th>Overtime</th><th>Project Breakdown</th></tr></thead>
+      <tbody>${sorted.map(([name,s]) => `
+        <tr>
+          <td><strong>${name}</strong></td>
+          <td>${s.total.toFixed(1)} hrs</td>
+          <td>${s.ot>0?`<span class="badge badge-ot">${s.ot.toFixed(1)} OT</span>`:'—'}</td>
+          <td style="color:var(--text-2);font-size:11px">${Object.entries(s.projects).sort((a,b)=>b[1]-a[1]).map(([j,h])=>`${j}: ${h.toFixed(1)}h`).join(' &nbsp;|&nbsp; ')}</td>
+        </tr>`).join('')}
+        <tr class="total-row"><td>TOTAL</td><td>${sorted.reduce((s,[,p])=>s+p.total,0).toFixed(1)} hrs</td><td></td><td></td></tr>
+      </tbody>
+    </table></div>`;
+}
+
+// ── JSONP ─────────────────────────────────────────────────
+function jsonpGet(action) {
+  return new Promise((resolve, reject) => {
+    const cb = 'ts_cb_' + Date.now();
+    const s = document.createElement('script');
+    const timer = setTimeout(() => { delete window[cb]; if(document.body.contains(s))document.body.removeChild(s); reject(new Error('Timeout')); }, 15000);
+    window[cb] = json => { clearTimeout(timer); delete window[cb]; if(document.body.contains(s))document.body.removeChild(s); json.error?reject(new Error(json.error)):resolve(json); };
+    s.onerror = () => { clearTimeout(timer); delete window[cb]; if(document.body.contains(s))document.body.removeChild(s); reject(new Error('Load failed')); };
+    s.src = SHEET_URL + '?action=' + action + '&callback=' + cb;
+    document.body.appendChild(s);
+  });
+}
+
+function jsonpPost(payload) {
+  return new Promise((resolve, reject) => {
+    const cb = 'ts_post_' + Date.now();
+    const s = document.createElement('script');
+    const timer = setTimeout(() => { delete window[cb]; if(document.body.contains(s))document.body.removeChild(s); reject(new Error('Timeout')); }, 15000);
+    window[cb] = json => { clearTimeout(timer); delete window[cb]; if(document.body.contains(s))document.body.removeChild(s); json.error?reject(new Error(json.error)):resolve(json); };
+    s.onerror = () => { clearTimeout(timer); delete window[cb]; if(document.body.contains(s))document.body.removeChild(s); reject(new Error('Post failed')); };
+    s.src = SHEET_URL + '?callback=' + cb + '&payload=' + encodeURIComponent(JSON.stringify(payload));
+    document.body.appendChild(s);
+  });
+}
+
+// ── UI helpers ────────────────────────────────────────────
+function showToast(msg, isError, isSuccess) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show' + (isError?' error':isSuccess?' success':'');
+  setTimeout(() => { t.className = 'toast'; }, 3500);
+}
+
+function setSyncStatus(state, msg) {
+  const dot = document.getElementById('syncDot');
+  dot.className = 'sync-dot'+(state==='syncing'?' syncing':state==='error'?' error':'');
+  document.getElementById('syncText').textContent = msg;
+}
+function setSyncStatus2(state, msg) {
+  const dot = document.getElementById('syncDot2');
+  if(!dot) return;
+  dot.className = 'sync-dot'+(state==='syncing'?' syncing':state==='error'?' error':'');
+  document.getElementById('syncText2').textContent = msg;
+}
+function setSyncStatus3(state, msg) {
+  const dot = document.getElementById('syncDot3');
+  if(!dot) return;
+  dot.className = 'sync-dot'+(state==='syncing'?' syncing':state==='error'?' error':'');
+  document.getElementById('syncText3').textContent = msg;
+}
+</script>
+
+<datalist id="projectList">
+  <option value="2318">2318 - Shilpa Waterfront Apartments</option>
+  <option value="2518">2518 - Qomate Apartments, Wailoku</option>
+  <option value="2514">2514 - ASCO Suva Head Office</option>
+  <option value="2519">2519 - Korean Embassy</option>
+  <option value="14-04B">14-04B - HGI Suva Foreshore</option>
+  <option value="2010">2010 - Wananavu Resort</option>
+  <option value="2507">2507 - CWM Hospital Acute Ward</option>
+  <option value="2502">2502 - Busa Land</option>
+  <option value="2205">2205 - Arshad Residence Lekutu St. & Rewa St.</option>
+  <option value="2402">2402 - RB Knolly St. Apartments</option>
+  <option value="1906">1906 - TappooCity Nadi Back Rd.</option>
+  <option value="2316">2316 - Tubemakers Industrial Development</option>
+  <option value="1324">1324 - TISI Nadi Sangam Temple</option>
+  <option value="2413">2413 - Sami Apartments, Northern Press Rd Nadi</option>
+  <option value="726">726 - Tabua Towers</option>
+  <option value="1610">1610 - Tavua Temple Refurbishment</option>
+  <option value="2601">2601 - Bobby Raniga Gym Extension</option>
+  <option value="2407">2407 - Raniga Villa Lot 7 Peninsula Denarau</option>
+  <option value="1302">1302 - MH Nausori</option>
+  <option value="2009">2009 - Airport Services Apartment</option>
+  <option value="1404">1404 - Drain / Construction Details</option>
+  <option value="1538">1538 - Sales Office</option>
+  <option value="2513">2513 - DCL Building</option>
+  <option value="1322">1322 - Asbuilts Project</option>
+  <option value="1418">1418 - DCL Masterplan</option>
+  <option value="2705">2705 - CWM Maternity / Sewer Line</option>
+  <option value="A">A - Admin</option>
+  <option value="A1">A1 - Staff Meeting</option>
+  <option value="V">V - Business Development / Site Visit</option>
+  <option value="C">C - Training / Familiarization</option>
+  <option value="EOI-26-05">EOI-26-05 - EOI - FNU Buildings Tender</option>
+  <option value="EOI-26-06">EOI-26-06 - EOI - FNU VC & Admin Tender</option>
+  <option value="EOI-26-07">EOI-26-07 - EOI - FNU Humanitarian Tender</option>
+  <option value="EOI-26-08">EOI-26-08 - EOI - SDG Portfolio & CV</option>
+  <option value="EOI-26-09">EOI-26-09 - EOI - Fee Proposal</option>
+</datalist>
+</body>
+</html>
