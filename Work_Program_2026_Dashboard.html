@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SDG Work Program 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f7f6f3;--surface:#fff;--surface2:#fff7ed;--border:#e8e0d8;--text:#16151f;--text2:#6e6d7a;--text3:#b0afc0;--accent:#c2410c;--accent2:#ea580c;--accent-light:#fff7ed;--ok:#065f46;--ok-light:#ecfdf5;--danger:#be123c;--danger-light:#fff1f2;--warn:#92400e;--warn-light:#fffbeb;--info:#0369a1;--info-light:#f0f9ff;--teal:#0f766e;--teal-light:#f0fdfa;--shadow:0 1px 3px rgba(0,0,0,.07),0 4px 16px rgba(0,0,0,.05);--shadow-lg:0 8px 32px rgba(0,0,0,.12);--radius:10px;--radius-lg:14px;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:14px;-webkit-font-smoothing:antialiased;}
+.header{background:var(--accent);color:#fff;padding:0 28px;display:flex;align-items:center;justify-content:space-between;height:60px;position:sticky;top:0;z-index:200;box-shadow:0 2px 16px rgba(194,65,12,.35);}
+.header-logo{font-family:'Syne',sans-serif;font-weight:700;font-size:18px;}
+.header-sub{font-size:10px;opacity:.6;letter-spacing:1.5px;text-transform:uppercase;margin-top:1px;}
+.header-right{display:flex;align-items:center;gap:10px;}
+.hbtn{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);color:#fff;padding:6px 16px;border-radius:6px;cursor:pointer;font-size:12px;font-family:inherit;font-weight:500;transition:background .15s;}
+.hbtn:hover{background:rgba(255,255,255,.28);}
+.sync-pill{display:flex;align-items:center;gap:6px;font-size:11px;opacity:.8;}
+.sync-dot{width:7px;height:7px;border-radius:50%;background:#4ade80;flex-shrink:0;}
+.sync-dot.syncing{background:#fbbf24;animation:pulse .8s infinite;}
+.sync-dot.error{background:#f87171;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.main{padding:20px 28px 48px;max-width:1700px;margin:0 auto;}
+.stats-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:20px;}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;box-shadow:var(--shadow);}
+.stat-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--text2);margin-bottom:5px;}
+.stat-value{font-size:26px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1;}
+.stat-sub{font-size:11px;color:var(--text2);margin-top:3px;}
+.controls-row{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;align-items:center;}
+.search-wrap{flex:1;min-width:200px;position:relative;}
+.search-wrap input{width:100%;padding:9px 12px 9px 34px;border:1px solid var(--border);border-radius:8px;font-family:inherit;font-size:13px;background:var(--surface);color:var(--text);outline:none;transition:border .15s;}
+.search-wrap input:focus{border-color:var(--accent2);}
+.search-icon{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:13px;pointer-events:none;}
+.ctrl-select{padding:9px 12px;border:1px solid var(--border);border-radius:8px;font-family:inherit;font-size:13px;background:var(--surface);color:var(--text);outline:none;cursor:pointer;}
+.tabs{display:flex;gap:5px;margin-bottom:18px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:4px;width:fit-content;box-shadow:var(--shadow);}
+.tab{padding:7px 18px;border-radius:7px;font-size:13px;font-weight:500;cursor:pointer;color:var(--text2);transition:all .15s;white-space:nowrap;border:none;background:none;font-family:inherit;}
+.tab:hover{color:var(--text);}
+.tab.active{background:var(--accent);color:#fff;box-shadow:0 2px 8px rgba(194,65,12,.3);}
+.content-grid{display:grid;grid-template-columns:1fr 360px;gap:18px;align-items:start;}
+.section-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.9px;color:var(--text2);padding:16px 0 7px;display:flex;align-items:center;gap:8px;}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border);}
+.section-label.orange{color:var(--accent);}
+.section-label.red{color:var(--danger);}
+.section-label.blue{color:var(--info);}
+.section-label.gray{color:var(--text3);}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow);margin-bottom:7px;transition:box-shadow .15s;}
+.card:hover{box-shadow:0 4px 20px rgba(0,0,0,.09);}
+.card-header{display:flex;align-items:center;gap:8px;padding:11px 14px;cursor:pointer;user-select:none;flex-wrap:wrap;}
+.card-header:hover{background:var(--surface2);}
+.proj-num{font-size:11px;color:var(--text3);min-width:46px;font-weight:600;font-family:'Syne',sans-serif;}
+.proj-name{font-size:13px;font-weight:600;color:var(--text);flex:1;min-width:130px;}
+.phase-tag{font-size:10px;color:var(--text2);background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:2px 6px;white-space:nowrap;}
+.staff-pill{font-size:10px;padding:2px 8px;border-radius:99px;background:var(--info-light);color:var(--info);white-space:nowrap;font-weight:500;border:1px solid #bfdbfe;}
+.badge{font-size:10px;padding:2px 9px;border-radius:99px;white-space:nowrap;font-weight:600;}
+.badge-progress{background:var(--warn-light);color:var(--warn);}
+.badge-done{background:var(--ok-light);color:var(--ok);}
+.badge-hold{background:#f1efe8;color:#6b6b62;}
+.badge-stuck{background:var(--danger-light);color:var(--danger);}
+.badge-heldup{background:#fff1f2;color:#9f1239;}
+.badge-closed{background:#f1efe8;color:#6b6b62;}
+.badge-standby{background:var(--bg);color:var(--text2);border:1px solid var(--border);}
+.chevron{font-size:13px;color:var(--text3);transition:transform .2s;margin-left:auto;flex-shrink:0;}
+.chevron.open{transform:rotate(90deg);}
+.card-body{display:none;border-top:1px solid var(--border);}
+.card-body.open{display:block;}
+.milestone-row{display:grid;grid-template-columns:155px 1fr auto;gap:10px;align-items:start;padding:9px 14px;border-bottom:1px solid var(--border);font-size:12px;}
+.milestone-row:last-child{border-bottom:none;}
+.ms-label{color:var(--text2);font-weight:600;font-size:10px;text-transform:uppercase;letter-spacing:.05em;padding-top:2px;line-height:1.4;}
+.ms-comment{color:var(--text);line-height:1.55;}
+.ms-comment em{font-style:normal;font-size:11px;color:var(--text3);display:block;margin-top:3px;}
+.ms-status{display:flex;align-items:center;gap:5px;padding-top:2px;}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block;flex-shrink:0;}
+.dot-done{background:var(--ok);}
+.dot-progress{background:#d97706;}
+.dot-hold{background:var(--text3);}
+.dot-stuck{background:var(--danger);}
+.card-comment{padding:10px 14px;font-size:12px;color:var(--text2);line-height:1.6;}
+.add-ms-wrap{padding:6px 14px 10px;}
+.daily-row{display:grid;grid-template-columns:100px 1fr;gap:8px;padding:9px 14px;border-bottom:1px solid var(--border);font-size:12px;}
+.daily-row:last-child{border-bottom:none;}
+.daily-staff{font-weight:700;color:var(--accent);font-size:11px;text-transform:uppercase;letter-spacing:.05em;padding-top:2px;}
+.daily-work{color:var(--text);line-height:1.55;}
+.daily-proj-tag{display:inline-block;background:var(--accent-light);color:var(--accent);border-radius:3px;padding:1px 5px;font-size:10px;font-weight:700;margin-right:3px;}
+.lodge-body{padding:12px 14px;}
+.lodge-meta{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;}
+.meta-pill{font-size:10px;padding:2px 8px;border-radius:99px;background:var(--teal-light);color:var(--teal);font-weight:500;border:1px solid #99f6e4;}
+.lodge-latest{font-size:12px;color:var(--text);line-height:1.55;padding:9px 12px;background:var(--warn-light);border-radius:7px;margin-bottom:10px;border-left:3px solid var(--warn);}
+.lodge-latest strong{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--warn);margin-bottom:3px;font-weight:700;}
+.history-toggle{font-size:11px;color:var(--info);cursor:pointer;border:none;background:none;font-family:inherit;text-decoration:underline;}
+.history-list{display:none;margin-top:8px;border-left:2px solid var(--border);padding-left:12px;}
+.history-list.open{display:block;}
+.history-item{margin-bottom:8px;font-size:11px;}
+.history-date{color:var(--text3);font-weight:600;font-size:10px;}
+.history-by{color:var(--info);font-weight:600;font-size:10px;background:var(--info-light);padding:1px 5px;border-radius:4px;margin-left:3px;}
+.history-note{color:var(--text2);line-height:1.5;margin-top:2px;}
+.vijay-panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow);position:sticky;top:78px;}
+.vijay-header{background:var(--info);color:#fff;padding:13px 16px;}
+.vijay-header h2{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;margin-bottom:2px;}
+.vijay-header p{font-size:11px;opacity:.75;}
+.vijay-count{display:inline-block;background:rgba(255,255,255,.25);border-radius:99px;padding:1px 8px;font-size:11px;font-weight:700;margin-left:6px;}
+.vijay-item{padding:11px 14px;border-bottom:1px solid var(--border);}
+.vijay-item:last-child{border-bottom:none;}
+.vijay-proj{display:flex;align-items:center;gap:6px;margin-bottom:4px;}
+.vijay-ref{font-size:10px;font-weight:700;color:var(--accent);background:var(--accent-light);border-radius:3px;padding:2px 5px;}
+.vijay-name{font-size:12px;font-weight:600;color:var(--text);}
+.vijay-ms{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--text2);margin-bottom:3px;}
+.vijay-comment{font-size:11px;color:var(--text2);line-height:1.5;}
+.vijay-staff{font-size:10px;color:var(--info);margin-top:3px;}
+.btn{padding:6px 16px;border-radius:6px;font-size:12px;cursor:pointer;border:1px solid var(--border);background:var(--surface);color:var(--text);font-family:inherit;font-weight:500;transition:all .15s;}
+.btn:hover{background:var(--surface2);}
+.btn-primary{background:var(--accent);color:#fff;border-color:var(--accent);}
+.btn-primary:hover{background:var(--accent2);}
+.btn-danger{background:var(--danger-light);color:var(--danger);border-color:#fca5a5;}
+.add-btn{display:inline-flex;align-items:center;gap:4px;padding:5px 11px;border-radius:99px;font-size:11px;cursor:pointer;border:1px dashed var(--border);background:transparent;color:var(--text2);font-family:inherit;transition:all .15s;}
+.add-btn:hover{border-color:var(--accent2);color:var(--accent2);}
+.edit-btn{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:4px;background:transparent;border:none;cursor:pointer;color:var(--text3);font-size:12px;opacity:0;transition:opacity .15s;flex-shrink:0;}
+.card-header:hover .edit-btn,.milestone-row:hover .edit-btn{opacity:1;}
+.edit-btn:hover{color:var(--text);background:var(--bg);}
+.add-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1000;align-items:center;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--surface);border-radius:14px;padding:22px;width:min(560px,92vw);max-height:90vh;overflow-y:auto;box-shadow:var(--shadow-lg);}
+.modal h3{font-size:15px;font-weight:600;margin-bottom:14px;font-family:'Syne',sans-serif;}
+.modal label{display:block;font-size:10px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;margin:10px 0 4px;}
+.modal input,.modal textarea,.modal select{width:100%;padding:8px 10px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text);font-size:13px;font-family:inherit;outline:none;transition:border .15s;}
+.modal textarea{min-height:75px;resize:vertical;}
+.modal input:focus,.modal textarea:focus,.modal select:focus{border-color:var(--accent2);}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:18px;flex-wrap:wrap;}
+.toast{position:fixed;bottom:22px;right:22px;background:var(--text);color:#fff;padding:10px 18px;border-radius:8px;font-size:13px;font-weight:500;z-index:2000;opacity:0;transform:translateY(8px);transition:all .25s;pointer-events:none;}
+.toast.show{opacity:1;transform:none;}
+.toast.error{background:var(--danger);}
+.toast.success{background:var(--ok);}
+.no-results{text-align:center;color:var(--text3);font-size:14px;padding:40px 0;}
+.week-bar{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap;}
+.week-label{font-size:13px;font-weight:600;color:var(--text);}
+.day-tab{padding:5px 12px;border-radius:6px;font-size:12px;cursor:pointer;border:1px solid var(--border);background:var(--surface);color:var(--text2);font-family:inherit;transition:all .15s;}
+.day-tab.active{background:var(--accent);color:#fff;border-color:var(--accent);}
+.day-tab:hover:not(.active){background:var(--surface2);}
+@media(max-width:1200px){.content-grid{grid-template-columns:1fr;}.vijay-panel{position:static;}.stats-grid{grid-template-columns:repeat(3,1fr);}}
+@media(max-width:640px){.main{padding:14px;}.stats-grid{grid-template-columns:repeat(2,1fr);}.milestone-row{grid-template-columns:1fr;}.header{padding:0 16px;}}
+</style>
+</head>
+<body>
+<div class="header">
+  <div><div class="header-logo">Sharma Design Group</div><div class="header-sub">Active Project Work Program 2026</div></div>
+  <div class="header-right">
+    <div class="sync-pill"><span class="sync-dot" id="syncDot"></span><span id="syncText">Loading…</span></div>
+    <button class="hbtn" onclick="fetchData()">&#8635; Refresh</button>
+  </div>
+</div>
+<div class="main">
+  <div class="stats-grid" id="summaryBar">
+    <div class="stat-card"><div class="stat-label">In Progress</div><div class="stat-value" style="color:var(--accent)">&#8212;</div></div>
+    <div class="stat-card"><div class="stat-label">Held Up</div><div class="stat-value" style="color:var(--danger)">&#8212;</div></div>
+    <div class="stat-card"><div class="stat-label">On Hold</div><div class="stat-value" style="color:var(--text2)">&#8212;</div></div>
+    <div class="stat-card"><div class="stat-label">No Progress</div><div class="stat-value" style="color:var(--warn)">&#8212;</div></div>
+    <div class="stat-card"><div class="stat-label">Lodgements</div><div class="stat-value" style="color:var(--info)">&#8212;</div></div>
+    <div class="stat-card"><div class="stat-label">Vijay Items</div><div class="stat-value" style="color:var(--info)" id="vijay-stat">&#8212;</div></div>
+  </div>
+  <div class="controls-row">
+    <div class="search-wrap"><span class="search-icon">&#8981;</span><input type="text" id="search" placeholder="Search projects, staff, milestones&#8230;"></div>
+    <select class="ctrl-select" id="staffFilter"><option value="">All staff</option></select>
+    <select class="ctrl-select" id="statusFilter">
+      <option value="">All statuses</option><option value="progress">In Progress</option>
+      <option value="heldup">Held Up</option><option value="hold">On Hold</option><option value="stuck">No Progress</option>
+    </select>
+  </div>
+  <div class="tabs" id="tabs"></div>
+  <div class="content-grid">
+    <div class="content-main">
+      <div id="grid"></div>
+      <div id="noResults" class="no-results" style="display:none">No projects match your search.</div>
+      <div class="add-row" id="addButtons"></div>
+    </div>
+    <div class="content-side">
+      <div class="vijay-panel" id="vijayPanel" style="display:none">
+        <div class="vijay-header"><h2>&#9873; Vijay Sharma <span class="vijay-count" id="vijayCount">0</span></h2><p>Items requiring attention or decision</p></div>
+        <div id="vijayList"></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal"><h3 id="modalTitle">Edit</h3><div id="modalBody"></div>
+    <div class="modal-actions">
+      <button class="btn btn-danger" id="modalDeleteBtn" style="display:none;margin-right:auto" onclick="handleModalDelete()">Delete</button>
+      <button class="btn" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="handleModalSave()">Save</button>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+const SHEET_URL='https://script.google.com/macros/s/AKfycbx34N6ognL3vXGlHrpoKas0syU7S0Dy2orU9ba0RxsuaLCIMfsJKdrwLyjlPUD00vqR/exec';
+let DATA={active:[],onHold:[],standby:[],lodgements:[],staff:[],dailyUpdate:[]};
+let currentTab='active',searchVal='',staffVal='',statusVal='',modalContext=null;
+
+const SD={
+  active:[
+    {id:'23-18',name:'Shilpa Waterfront Apartments',phase:'Concept',staff:['Ashreet'],overall:'progress',milestones:[{label:'Concept Design',comment:'2nd concept: garage in front, pool at back. Changes from client sent to VS for review. No feedback yet. Concept given to Vijay.',staff:'Ashreet / Vijay',status:'progress'}]},
+    {id:'25-14',name:'ASCO Suva Head Office',phase:'Concept Design',staff:['Jon','Emosi'],overall:'progress',milestones:[{label:'Concept Design',comment:'Draft Concept 1 for Space Planning given to client R2 21/01/2025. No feedback yet.',staff:'Jon / Emosi',status:'done'},{label:'Revised Concept R3',comment:'Client feedback provided. Revised concept issued for HQ space only. Client gave additional scope. Client Vikash R1 concept plan — no feedback.',staff:'Jon / Emosi',status:'progress'},{label:'Outline Planning Approval',comment:'4th May — Meeting ASCO Design Team 1-2.30pm',staff:'',status:'progress'}]},
+    {id:'25-19',name:'Korean Embassy FHL Tower',phase:'Documentation',staff:['Jon','Emosi','Eroni'],overall:'progress',milestones:[{label:'Concept Design',comment:'Jon met Mr Kim — he will advise on further information.',staff:'Jon',status:'done'},{label:'Detailed Documentation',comment:'Commenced. Need Building Services Engineer. Revised inter-tenancy wall gone back to original. JY markups — Francis to update products for lock mag. Final tender drawings sent for cost estimates. Waiting for Builders Budget Cost Estimate. Half height wall option due to budget.',staff:'Emosi / Jon',status:'progress'},{label:'Tender Support',comment:'Preliminary Budget Estimates from Builders to come in 1/04/2026.',staff:'',status:'progress'}]},
+    {id:'14-04B',name:'HGI Suva Foreshore',phase:'Construction',staff:['Emosi','Masi','Eroni'],overall:'progress',milestones:[{label:'Site Inspections',comment:'Site meeting attendance, reports, RFIs.',staff:'Emosi / Masi',status:'progress'},{label:'Variations',comment:'Alfresco documentation revisions completed, sent to SB — no feedback yet.',staff:'Masi',status:'done'},{label:'Fire Stair / Door Issues',comment:'Pool tile selection sent to VS for approval. Fixing details for gates (x2). Existing stair to redesign. Coordinate Guard room as per structural drawings.',staff:'Masi / Vijay / Emosi',status:'progress'},{label:'New RFIs',comment:'Loading bay roof, MSB fence, HLK 042 roof, linkway windows, rubbish collection room, BOH entry roof.',staff:'Emosi / Masi / Eroni',status:'progress'}]},
+    {id:'25-07',name:'CWM Hospital — Acute Ward',phase:'Construction',staff:['Ashreet'],overall:'progress',milestones:[{label:'Concept & Documentation',comment:'Completed.',staff:'Judy / Jon',status:'done'},{label:'Construction',comment:'Commenced on-site 18/02. Fortnightly minutes chaired by Kunal. CWM Meeting Thursday 10am on-site. CWM Training Tuesday. Award Project Manager.',staff:'Ashreet',status:'progress'}]},
+    {id:'24-02',name:'RB Knolly Street',phase:'Building Permit',staff:['Masi'],overall:'progress',milestones:[{label:'Tender',comment:'Tender Analysis given to client with recommendation.',staff:'Masi',status:'done'},{label:'Building Permit',comment:'Application with SCC. Payment made for DTCP fees — sent for final approval 26/03/26. Recommendation from Vijay — report by Masi.',staff:'Masi',status:'progress'}]},
+    {id:'24-15',name:'Jiten Patel Mixed Use',phase:'Building Permit',staff:['Masi'],overall:'progress',milestones:[{label:'Outline Planning',comment:'Approval received.',staff:'',status:'done'},{label:'Building Permit',comment:'NTC Building Permit — received NTC comments Friday 27/03/26.',staff:'Masi',status:'progress'}]},
+    {id:'15-38',name:'Koro Nadi Bay',phase:'Developed Design',staff:['Masi'],overall:'progress',milestones:[{label:'Sales Office',comment:'Building Permit lodged. Construction commenced 8/02/2026.',staff:'Masi',status:'done'},{label:'Developed Design',comment:'Hold — design changes and structural review.',staff:'Masi',status:'progress'},{label:'Detailed Documentation',comment:'Jackson CSE Steel. Coordination set — Wednesday meeting with Roveen and Temo.',staff:'Masi',status:'progress'}]},
+    {id:'12-40',name:'Denarau Moorings — NTC Permit',phase:'Local Authorities',staff:['Masi'],overall:'progress',milestones:[{label:'Building Permit',comment:'Still with IAP (Warren) to attend Nadi Council comments 29/04/26. VS emailed Warren — been 2 months, what is the hold up.',staff:'Masi',status:'progress'}]},
+    {id:'22-05',name:'Arshad Residence',phase:'Concept',staff:['Ashreet','Pranay'],overall:'progress',milestones:[{label:'Concept Design',comment:'Concept given to client, awaiting VS instructions. Changes submitted. Pranay to complete 3D facade for VS today (30/03/26).',staff:'Ashreet / Pranay',status:'progress'}]},
+    {id:'23-22',name:"Queen's Drive Apartment",phase:'Concept Outline',staff:['Francis','Emosi'],overall:'stuck',milestones:[{label:'Concept Outline',comment:'Lodged — stuck with DTCP (Paul). Stuck 1 year 2 months. Set up meeting with CEO DTCP.',staff:'Francis',status:'stuck'}]},
+    {id:'19-04',name:'Laucala Bay Commercial',phase:'Rezoning',staff:['Francis','Emosi'],overall:'stuck',milestones:[{label:'Rezoning Application',comment:'Lodged — stuck with DTCP (Paul). Stuck 6 months. Francis followup.',staff:'Francis',status:'stuck'}]},
+    {id:'25-06',name:"Sami's Development — Denison Rd",phase:'Concept',staff:['Masi','Ashreet'],overall:'progress',milestones:[{label:'Concept Design',comment:'VS to advise concept — no response. Waiting on client/VS feedback.',staff:'Masi / Ashreet',status:'progress'},{label:'Outline Approval',comment:'Collected 05/03/26.',staff:'',status:'done'}]},
+    {id:'23-17',name:'Rups Suva Waterfront Apartments',phase:'OPA',staff:['Ashreet'],overall:'progress',milestones:[{label:'Concept Design',comment:'Draft concept sent to client, awaiting further instructions.',staff:'Ashreet',status:'done'},{label:'Outline Planning',comment:'Latest set sent to VS for comments — no feedback yet. Waiting on client/VS feedback.',staff:'Ashreet',status:'progress'}]},
+    {id:'23-12',name:'RB Nadawa',phase:'Developed Design',staff:['Emosi'],overall:'progress',milestones:[{label:'Concept Design',comment:'Outline approval received.',staff:'Emosi',status:'done'},{label:'Developed Design',comment:'VS to advise further instructions. Given to Vijay — ask him for any feedback. Emosi to follow up.',staff:'Emosi',status:'progress'}]},
+    {id:'24-07',name:'Ajay Raniga — New Villa',phase:'OPA',staff:['Masi'],overall:'progress',milestones:[{label:'Outline Planning',comment:'More 3D required. Masi waiting for VS/client approval before commencing documentation. Still waiting on client for feedback.',staff:'Masi',status:'progress'}]},
+    {id:'25-04',name:'Nalin Patel Apartments',phase:'Concept',staff:['Ashreet'],overall:'progress',milestones:[{label:'Concept Design',comment:'Given site with setbacks — no response from VS. Awaiting VS feedback.',staff:'Ashreet',status:'progress'}]},
+    {id:'24-08',name:'Naviti Resort — Busa Land',phase:'Concept',staff:['Jon','Masi'],overall:'progress',milestones:[{label:'Concept Design',comment:'Concept villas and central facilities, 3Ds revised and sent — no feedback. VS to give changes from client — nothing received yet 09/03.',staff:'Masi',status:'progress'},{label:'New Site Concept',comment:'New site concept and villa concept plans (10 Duplex + 25 Single Honeymoon Villas). Sent to client — no feedback yet.',staff:'Jon',status:'done'}]},
+    {id:'16-53',name:'Tappoo Port Hotel',phase:'OPA/Documentation',staff:['Jon'],overall:'heldup',milestones:[{label:'Concept Design',comment:'All Nadi Tappoo projects given to VS to follow up on fees. Option 2 revisions on Hyatt comments done and sent to Kaushal — waiting on client. No feedback yet.',staff:'Jon',status:'progress'}]},
+    {id:'25-08',name:'Nadi Bay Park Warehouse',phase:'Concept',staff:['Masi'],overall:'heldup',milestones:[{label:'Concept Design',comment:'Concept 3Ds and plans given to VS — no feedback yet. 4R and Vijay to confirm partnership and option to proceed. Waiting on client.',staff:'Masi',status:'progress'}]},
+    {id:'25-18',name:'Qomate Apartments, Wailoku',phase:'Concept',staff:['Pranay'],overall:'progress',milestones:[{label:'Concept Design',comment:'Survey commenced by Wood Jepsen. Pranay waiting for VS brief or sketches on concept design. Concept 01 emailed to client.',staff:'Pranay',status:'progress'}]},
+    {id:'23-16',name:'Tubemakers Industrial',phase:'Construction/DLP',staff:['Masi'],overall:'progress',milestones:[{label:'Construction',comment:'Almost complete — building 1 and 2. All subbies awarded. Completion 1st May.',staff:'Masi',status:'done'},{label:'DLP',comment:'Subbies awarded — signage still with client.',staff:'Masi',status:'progress'}]},
+    {id:'20-10',name:'Wananavu Resort',phase:'Construction',staff:['Emosi','Masi'],overall:'progress',milestones:[{label:'Revised Building Permit',comment:'ID updates and coordination complete. Spa Room within Central Facilities — VS / Masi to check. No feedback from client/VS.',staff:'Masi / VS',status:'progress'}]},
+  ],
+  onHold:[
+    {id:'24-08B',name:'Naviti Resort — Existing Rooms',staff:['Judy','Ashreet','Emosi'],comment:'Concept sent to client, awaiting feedback.'},
+    {id:'23-08C',name:'Warwick Resort — Existing Rooms',staff:['Judy','Emosi'],comment:'Concept sent to client, awaiting feedback.'},
+    {id:'23-23',name:'USP Business Centre',staff:['Jon'],comment:'Hold — client has not advised anything further.'},
+    {id:'25-09',name:'USP Gym',staff:['Jon'],comment:'Hold — Jon to advise.'},
+    {id:'25-01',name:'Hilton Denarau',staff:['Masi'],comment:'Awaiting feedback from client.'},
+    {id:'22-03',name:'Hanson City Nausori',staff:['Francis','Masi'],comment:'Concept discussed with client. Awaiting VS instructions.'},
+  ],
+  standby:[
+    {id:'16-29',name:'MHCC Tower',staff:['Jon','Ashreet'],comment:'Site meeting attendance, reports, RFIs.'},
+    {id:'16-29B',name:'FHL Tower',staff:['Jon','Ashreet'],comment:'Site meeting attendance, reports.'},
+    {id:'13-24',name:'TISI (Completion)',staff:['Masi'],comment:'Site meeting attendance, reports.'},
+  ],
+  lodgements:[
+    {id:'18-26',name:'Niranjans Mazda Showroom',staff:['Ashreet','Emosi'],authority:'SCC',refNo:'SCC File 45/923',status:'stuck',latestUpdate:'SCC sent comments 25/11/25. Cannot build on drainage reserve. Need FRA clearance. Ashreet to follow up VS — no feedback.',history:[{date:'14/04/2025',by:'AS',note:'WAF issued Service Advice Notice. Letter of undertaking requested.'},{date:'21/05/2025',by:'AS',note:'Submitted EFL and WAF comments to SCC.'},{date:'25/11/2025',by:'EQ',note:'SCC sent comments: FRA consent, CEMP report, no building over drainage reserve.'}]},
+    {id:'19-04',name:'Laucala Bay Commercial',staff:['Francis','Emosi'],authority:'SCC/DTCP',refNo:'',status:'progress',latestUpdate:'Provisional approval granted for rezoning. SCC to advertise. Awaiting payment of $1,486.50 before further processing. Stuck with Paul TCP.',history:[{date:'01/05/25',by:'Francis',note:'Following up at SCC. Check with Ulamila for meeting date.'}]},
+    {id:'23-12',name:'RB Nadawa',staff:['Ashreet','Emosi'],authority:'NTC/DTCP',refNo:'',status:'progress',latestUpdate:'NTC passed file to DTCP 02/04/25 to Paul. Paul has been away 23/04/25, yet to advise.',history:[]},
+    {id:'23-22',name:"The Queen's Drive",staff:['Ashreet','Emosi'],authority:'SCC/DTCP',refNo:'',status:'stuck',latestUpdate:'PPE results lodged to DTCP by SCC. Application handled by Paul — objections need subcommittee discussion. Paul has been away.',history:[{date:'01/05/25',by:'Francis',note:'Following up at SCC.'}]},
+    {id:'24-02',name:'RB Knolly Street',staff:['Ashreet','Emosi'],authority:'SCC',refNo:'',status:'progress',latestUpdate:'Mere of SCC informed letter will be approved by Friday 9/05/2025.',history:[]},
+    {id:'20-09',name:'Deo Airport Commercial',staff:['Masi'],authority:'NTC/DTCP/FRA',refNo:'',status:'progress',latestUpdate:'WAF approval received, submitted to NTC. Application with DTCP for final rezoning. FRA issues — TIA required. Client made aware 16/03/2026. TIA started 27/03/26.',history:[{date:'27/03/26',by:'Masi',note:'DEO will get TIA done for FRA.'}]},
+    {id:'16-27',name:'Ba Subdivision',staff:['Masi'],authority:'DTCP/Ba Council',refNo:'DTCP File 3/1/5/33',status:'progress',latestUpdate:'Received approval from Lands — Vijay emailed approvals to Ba Town Council. BTC received comments from all parties. Jason BTC replied — vetting underway 18th Feb 2025.',history:[{date:'18/02/2025',by:'MC',note:'Jason Ba Town Council replied — vetting underway.'}]},
+    {id:'17-09',name:'Uduya Waterfront Apartments',staff:['Vijay'],authority:'Lami Town Council',refNo:'',status:'hold',latestUpdate:'Rates for SDG properties in Lami to be cleared before Lami Town Council will accept application.',history:[]},
+    {id:'18-04',name:'Uduya Island',staff:['Vijay'],authority:'Environment',refNo:'',status:'hold',latestUpdate:'Environment Officer Esita waiting for clarification on EIA report items. VS informed he would attend to it.',history:[]},
+    {id:'15-38',name:'Nadi Bay Sands (Koro) — NTC',staff:['Masi'],authority:'Nadi Town Council',refNo:'TP 1/16/1/1320',status:'progress',latestUpdate:'L13 Level amendments lodged to NTC 13th Feb 2025. Outline renewal received from NTC for another 2 years.',history:[{date:'13/02/25',by:'Masi',note:'L13 Level amendments lodged to Nadi Town Council.'}]},
+  ],
+  dailyUpdate:[
+    {staff:'Jonathan',day:'Mon 20/04',tasks:['26-03 Tappoo Medical Center Master Plan & 3D','FNU EOI-26-06 VC & Admin — 3D Concept Block for Task Appreciation','FNU EOI-26-07 Humanities — 3D Concept Block for Task Appreciation','25-07 CWM — Check with Ashreet on new RFI','25-19 Korean Embassy — Scope of Works Tender Document, PC Sums (Kramer figures)']},
+    {staff:'Masi',day:'Mon 20/04',tasks:['23-16 Tubemaker — Payment Certificate, negotiate with MSL for Cafeteria Bench, Signage quotation for client approvals','14-04B HGI — Attend to RFI — Bulkhead']},
+    {staff:'Emosi',day:'Mon 20/04',tasks:['Awaiting Masi — Start Documentation for Raniga Villa as discussed in meeting']},
+    {staff:'Ashreet',day:'Mon 20/04',tasks:['25-07 CWM — Ongoing coordination, response to site queries, potable water tank works and Acute Ward, PM scope documents compilation']},
+    {staff:'Francis',day:'Mon 20/04',tasks:['Follow up DTCP — Queens Drive Apartment & Laucala Bay Commercial','25-07 CWM — Joinery details','25-19 Korean Embassy — Enlarged Signage Details as per JY comment']},
+    {staff:'Eroni',day:'Mon 20/04',tasks:['24-15 Jiten Patel — Amend Unit 1B (Level 01): 1-bedroom, Mezzanine 2-bedroom and office, new roadside deck, elevated water tank platform, carpark']},
+    {staff:'Pranay',day:'Mon 20/04',tasks:['FNU — Work out area of each building for tendering purpose','FNU — Massing for tendering']},
+  ]
+};
+
+window.addEventListener('DOMContentLoaded',()=>{
+  DATA=SD;buildStaffFilter();buildTabs();updateSummary();render();
+  setSyncStatus('ok','Loaded from spreadsheet');
+  fetchData();
+  document.getElementById('search').addEventListener('input',e=>{searchVal=e.target.value;render();});
+  document.getElementById('staffFilter').addEventListener('change',e=>{staffVal=e.target.value;render();});
+  document.getElementById('statusFilter').addEventListener('change',e=>{statusVal=e.target.value;render();});
+  setInterval(()=>fetchData(),5*60*1000);
+});
+
+function fetchData(){
+  if(!SHEET_URL)return;
+  setSyncStatus('syncing','Syncing...');
+  const cb='sdg_cb_'+Date.now();
+  const s=document.createElement('script');
+  window[cb]=function(json){
+    delete window[cb];document.body.removeChild(s);
+    if(json.error){setSyncStatus('error','Sync error');return;}
+    DATA={...json,dailyUpdate:SD.dailyUpdate};
+    buildStaffFilter();buildTabs();updateSummary();render();
+    setSyncStatus('ok','Updated '+new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}));
+  };
+  s.onerror=()=>{delete window[cb];document.body.removeChild(s);setSyncStatus('ok','Loaded from spreadsheet');};
+  s.src=SHEET_URL+'?action=getData&callback='+cb;
+  document.body.appendChild(s);
+}
+
+async function apiPost(payload){
+  setSyncStatus('syncing','Saving...');
+  return new Promise((resolve,reject)=>{
+    const cb='sdg_post_'+Date.now();
+    const s=document.createElement('script');
+    window[cb]=function(json){delete window[cb];document.body.removeChild(s);if(json.error){reject(new Error(json.error));return;}fetchData().then(()=>resolve(json)).catch(reject);};
+    s.onerror=()=>{delete window[cb];document.body.removeChild(s);reject(new Error('Request failed'));};
+    s.src=SHEET_URL+'?callback='+cb+'&payload='+encodeURIComponent(JSON.stringify(payload));
+    document.body.appendChild(s);
+  });
+}
+
+function setSyncStatus(state,msg){
+  const dot=document.getElementById('syncDot');
+  dot.className='sync-dot'+(state==='syncing'?' syncing':state==='error'?' error':'');
+  document.getElementById('syncText').textContent=msg;
+}
+
+function showToast(msg,type){
+  const t=document.getElementById('toast');t.textContent=msg;
+  t.className='toast show'+(type?' '+type:'');
+  clearTimeout(t._t);t._t=setTimeout(()=>t.className='toast',3000);
+}
+
+function buildStaffFilter(){
+  const sel=document.getElementById('staffFilter');
+  const all=new Set();
+  [...DATA.active,...(DATA.onHold||[]),...(DATA.standby||[])].forEach(p=>(p.staff||[]).forEach(s=>all.add(s)));
+  (DATA.lodgements||[]).forEach(p=>(p.staff||[]).forEach(s=>all.add(s)));
+  const cur=sel.value;sel.innerHTML='<option value="">All staff</option>';
+  [...all].sort().forEach(s=>{sel.innerHTML+=`<option${s===cur?' selected':''}>${s}</option>`;});
+}
+
+function buildTabs(){
+  const defs=[{id:'active',label:'Active Projects'},{id:'daily',label:'Daily Work Update'},{id:'lodgements',label:'Lodgements'}];
+  document.getElementById('tabs').innerHTML=defs.map(t=>`<button class="tab${t.id===currentTab?' active':''}" onclick="switchTab('${t.id}')">${t.label}</button>`).join('');
+}
+
+function switchTab(t){currentTab=t;buildTabs();render();}
+
+function countVijay(){let n=0;DATA.active.forEach(p=>{(p.milestones||[]).forEach(ms=>{const t=(ms.comment||'').toLowerCase();if(t.includes('vijay')||t.includes('vs for')||t.includes('sent to vs')||t.includes('given to vs')||t.includes('given to vijay')||t.includes('waiting for vs')||t.includes('no feedback from vs'))n++;});});return n;}
+
+function updateSummary(){
+  const prog=DATA.active.filter(p=>p.overall==='progress').length;
+  const held=DATA.active.filter(p=>p.overall==='heldup').length;
+  const hold=DATA.active.filter(p=>p.overall==='hold').length+(DATA.onHold||[]).length;
+  const stuck=DATA.active.filter(p=>p.overall==='stuck').length;
+  const lodge=(DATA.lodgements||[]).length;
+  const vijay=countVijay();
+  document.getElementById('summaryBar').innerHTML=`
+    <div class="stat-card"><div class="stat-label">In Progress</div><div class="stat-value" style="color:var(--accent)">${prog}</div><div class="stat-sub">active projects</div></div>
+    <div class="stat-card"><div class="stat-label">Held Up</div><div class="stat-value" style="color:var(--danger)">${held}</div><div class="stat-sub">awaiting decision</div></div>
+    <div class="stat-card"><div class="stat-label">On Hold</div><div class="stat-value" style="color:var(--text2)">${hold}</div><div class="stat-sub">no feedback</div></div>
+    <div class="stat-card"><div class="stat-label">No Progress</div><div class="stat-value" style="color:var(--warn)">${stuck}</div><div class="stat-sub">stalled</div></div>
+    <div class="stat-card"><div class="stat-label">Lodgements</div><div class="stat-value" style="color:var(--info)">${lodge}</div><div class="stat-sub">with authorities</div></div>
+    <div class="stat-card"><div class="stat-label">Vijay Items</div><div class="stat-value" style="color:var(--info)">${vijay}</div><div class="stat-sub">need attention</div></div>`;
+}
+
+function matches(p){
+  const q=searchVal.toLowerCase();
+  const nm=!q||(p.name||'').toLowerCase().includes(q)||(p.id||'').toLowerCase().includes(q)||(p.phase||'').toLowerCase().includes(q)||(p.staff||[]).some(s=>s.toLowerCase().includes(q))||(p.milestones||[]).some(m=>(m.comment||'').toLowerCase().includes(q)||(m.label||'').toLowerCase().includes(q))||(p.comment||'').toLowerCase().includes(q)||(p.latestUpdate||'').toLowerCase().includes(q);
+  const sm=!staffVal||(p.staff||[]).some(s=>s===staffVal);
+  const st=!statusVal||p.overall===statusVal;
+  return nm&&sm&&st;
+}
+
+function sortByNum(arr){return arr.slice().sort((a,b)=>(parseInt((a.id||'').replace(/[^0-9]/g,''))||0)-(parseInt((b.id||'').replace(/[^0-9]/g,''))||0));}
+
+function render(){
+  const grid=document.getElementById('grid');
+  const addBtns=document.getElementById('addButtons');
+  if(currentTab==='active'){grid.innerHTML=renderActive();addBtns.innerHTML='<button class="add-btn" onclick="openAddProject()">+ Add Project</button><button class="add-btn" onclick="openAddOnHold()">+ Add On-Hold</button>';renderVijayPanel();}
+  else if(currentTab==='daily'){grid.innerHTML=renderDaily();addBtns.innerHTML='';document.getElementById('vijayPanel').style.display='none';}
+  else{grid.innerHTML=renderLodgements();addBtns.innerHTML='<button class="add-btn" onclick="openAddLodgement()">+ Add Lodgement</button>';document.getElementById('vijayPanel').style.display='none';}
+  document.getElementById('noResults').style.display=grid.innerHTML.trim()?'none':'block';
+}
+
+function sBadge(s){const map={progress:'badge-progress',hold:'badge-hold',stuck:'badge-stuck',done:'badge-done',closed:'badge-closed',heldup:'badge-heldup',standby:'badge-standby'};const labels={progress:'In Progress',hold:'On Hold',stuck:'No Progress',done:'Done',closed:'Closed',heldup:'Held Up',standby:'Standby'};return`<span class="badge ${map[s]||'badge-hold'}">${labels[s]||s}</span>`;}
+function dotC(s){return{progress:'dot-progress',hold:'dot-hold',stuck:'dot-stuck',done:'dot-done'}[s]||'dot-hold';}
+
+function renderActive(){
+  let h='';
+  const ip=sortByNum(DATA.active.filter(p=>p.overall==='progress').filter(matches));
+  const hu=sortByNum(DATA.active.filter(p=>p.overall==='heldup').filter(matches));
+  const oha=sortByNum(DATA.active.filter(p=>p.overall==='hold').filter(matches));
+  const ohl=sortByNum((DATA.onHold||[]).filter(matches));
+  const np=sortByNum(DATA.active.filter(p=>p.overall==='stuck').filter(matches));
+  if(ip.length){h+='<div class="section-label orange">In Progress</div>';ip.forEach(p=>{h+=pCard(p);});}
+  if(hu.length){h+='<div class="section-label red">Held Up</div>';hu.forEach(p=>{h+=pCard(p);});}
+  if(oha.length||ohl.length){h+='<div class="section-label gray">On Hold &#8212; No Feedback</div>';oha.forEach(p=>{h+=pCard(p);});ohl.forEach(p=>{h+=sCard(p,'hold','onHold');});}
+  if(np.length){h+='<div class="section-label red">No Progress</div>';np.forEach(p=>{h+=pCard(p);});}
+  if(!searchVal&&!staffVal&&!statusVal){h+='<div class="section-label gray">Standby &#8212; Attendance As / When Required</div>';(DATA.standby||[]).forEach(p=>{h+=sCard(p,'','standby');});}
+  return h;
+}
+
+function pCard(p){
+  const ms=(p.milestones||[]).map(ms=>`<div class="milestone-row"><div class="ms-label">${ms.label}</div><div class="ms-comment">${ms.comment||''}${ms.staff?`<em>&#128100; ${ms.staff}</em>`:''}${ms.date?`<em>&#128197; ${ms.date}</em>`:''}</div><div class="ms-status"><span class="dot ${dotC(ms.status)}"></span><button class="edit-btn" onclick="openEditMilestone(event,'${esc(p.id)}','${esc(ms.label)}')">&#9998;</button></div></div>`).join('');
+  return`<div class="card"><div class="card-header" onclick="toggleCard(this)"><span class="proj-num">${p.id}</span><span class="proj-name">${p.name}</span>${p.phase?`<span class="phase-tag">${p.phase}</span>`:''} ${(p.staff||[]).map(s=>`<span class="staff-pill">${s}</span>`).join('')} ${sBadge(p.overall)}<button class="edit-btn" onclick="openEditProject(event,'${esc(p.id)}')">&#9998;</button><span class="chevron">&#8250;</span></div><div class="card-body">${ms}<div class="add-ms-wrap"><button class="add-btn" onclick="openAddMilestone(event,'${esc(p.id)}')">+ Add milestone</button></div></div></div>`;
+}
+
+function sCard(p,badge,section){
+  return`<div class="card"><div class="card-header" onclick="toggleCard(this)"><span class="proj-num">${p.id}</span><span class="proj-name">${p.name}</span>${(p.staff||[]).map(s=>`<span class="staff-pill">${s}</span>`).join('')}${badge?sBadge(badge):''}<button class="edit-btn" onclick="openEditSimple(event,'${esc(p.id)}','${section}')">&#9998;</button><span class="chevron">&#8250;</span></div><div class="card-body"><div class="card-comment">${p.comment||'&#8212;'}</div></div></div>`;
+}
+
+function renderDaily(){
+  const updates=DATA.dailyUpdate||[];
+  if(!updates.length)return'<div class="no-results">No daily update data available.</div>';
+  const days=[...new Set(updates.map(u=>u.day))];
+  const activeDay=days[0];
+  let h=`<div class="week-bar"><span class="week-label">Current Week</span>${days.map(d=>`<button class="day-tab${d===activeDay?' active':''}" onclick="filterDay(this,'${d}')">${d}</button>`).join('')}</div><div id="daily-grid">`;
+  updates.filter(u=>u.day===activeDay).forEach(u=>{
+    if(!u.tasks||!u.tasks.length)return;
+    h+=`<div class="card" style="margin-bottom:7px"><div class="card-header" onclick="toggleCard(this)" style="background:var(--surface2)"><span class="proj-num" style="color:var(--accent);font-size:12px;min-width:90px">${u.staff}</span><span class="proj-name" style="color:var(--text2);font-size:12px;font-weight:500">${u.tasks.length} task${u.tasks.length>1?'s':''} today</span><span class="chevron open">&#8250;</span></div><div class="card-body open">${u.tasks.map(t=>{const hi=t.replace(/(\d{2}-\d{2,3}[A-Z]?|EOI-\d{2}-\d{2}|FNU)/g,'<span class="daily-proj-tag">$1</span>');return`<div class="daily-row"><div class="daily-staff">${u.staff}</div><div class="daily-work">${hi}</div></div>`;}).join('')}</div></div>`;
+  });
+  return h+'</div>';
+}
+
+window.filterDay=function(btn,day){
+  document.querySelectorAll('.day-tab').forEach(b=>b.classList.remove('active'));btn.classList.add('active');
+  const updates=(DATA.dailyUpdate||[]).filter(u=>u.day===day);let h='';
+  updates.forEach(u=>{if(!u.tasks||!u.tasks.length)return;h+=`<div class="card" style="margin-bottom:7px"><div class="card-header" onclick="toggleCard(this)" style="background:var(--surface2)"><span class="proj-num" style="color:var(--accent);font-size:12px;min-width:90px">${u.staff}</span><span class="proj-name" style="color:var(--text2);font-size:12px;font-weight:500">${u.tasks.length} task${u.tasks.length>1?'s':''} today</span><span class="chevron open">&#8250;</span></div><div class="card-body open">${u.tasks.map(t=>{const hi=t.replace(/(\d{2}-\d{2,3}[A-Z]?|EOI-\d{2}-\d{2}|FNU)/g,'<span class="daily-proj-tag">$1</span>');return`<div class="daily-row"><div class="daily-staff">${u.staff}</div><div class="daily-work">${hi}</div></div>`;}).join('')}</div></div>`;});
+  document.getElementById('daily-grid').innerHTML=h||'<div class="no-results">No data for this day.</div>';
+};
+
+function renderLodgements(){
+  return(DATA.lodgements||[]).filter(matches).map((p,i)=>{
+    const hid='hist-'+i;
+    const hh=(p.history||[]).map(h=>`<div class="history-item"><span class="history-date">${h.date||''}</span><span class="history-by">${h.by||''}</span><div class="history-note">${h.note||''}</div></div>`).join('');
+    return`<div class="card"><div class="card-header" onclick="toggleCard(this)"><span class="proj-num">${p.id}</span><span class="proj-name">${p.name}</span>${(p.staff||[]).map(s=>`<span class="staff-pill">${s}</span>`).join('')}${sBadge(p.status||'progress')}<button class="edit-btn" onclick="openEditLodgement(event,'${esc(p.id)}')">&#9998;</button><span class="chevron">&#8250;</span></div><div class="card-body"><div class="lodge-body"><div class="lodge-meta">${p.authority?`<span class="meta-pill">Authority: ${p.authority}</span>`:''} ${p.refNo?`<span class="meta-pill">Ref: ${p.refNo}</span>`:''}</div><div class="lodge-latest"><strong>Latest Update</strong>${p.latestUpdate||'&#8212;'}</div>${hh?`<button class="history-toggle" onclick="toggleHistory('${hid}',this)">Show follow-up history (${(p.history||[]).length} entries)</button><div class="history-list" id="${hid}">${hh}</div>`:''}</div></div></div>`;
+  }).join('');
+}
+
+function renderVijayPanel(){
+  const panel=document.getElementById('vijayPanel');const list=document.getElementById('vijayList');
+  if(searchVal||staffVal||statusVal||currentTab!=='active'){panel.style.display='none';return;}
+  const items=[];
+  DATA.active.forEach(p=>{(p.milestones||[]).forEach(ms=>{const t=(ms.comment||'').toLowerCase();if(t.includes('vijay')||t.includes('vs for')||t.includes('sent to vs')||t.includes('given to vs')||t.includes('given to vijay')||t.includes('waiting for vs')||t.includes('no feedback from vs'))items.push({proj:p,ms});});});
+  document.getElementById('vijayCount').textContent=items.length;
+  if(!items.length){panel.style.display='none';return;}
+  panel.style.display='block';
+  list.innerHTML=items.map(({proj,ms})=>`<div class="vijay-item"><div class="vijay-proj"><span class="vijay-ref">${proj.id}</span><span class="vijay-name">${proj.name}</span></div><div class="vijay-ms">${ms.label}</div><div class="vijay-comment">${ms.comment||''}</div>${ms.staff?`<div class="vijay-staff">&#128100; ${ms.staff}</div>`:''}</div>`).join('');
+}
+
+function toggleCard(h){const b=h.nextElementSibling;const c=h.querySelector('.chevron');b.classList.toggle('open');if(c)c.classList.toggle('open');}
+function toggleHistory(id,btn){const el=document.getElementById(id);if(!el)return;el.classList.toggle('open');btn.textContent=el.classList.contains('open')?'Hide follow-up history':`Show follow-up history (${el.querySelectorAll('.history-item').length} entries)`;}
+function esc(s){return(s||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/"/g,'&quot;');}
+
+function openModal(title,body,ctx,del){modalContext=ctx;document.getElementById('modalTitle').textContent=title;document.getElementById('modalBody').innerHTML=body;document.getElementById('modalDeleteBtn').style.display=del?'inline-block':'none';document.getElementById('modalOverlay').classList.add('open');}
+function closeModal(){document.getElementById('modalOverlay').classList.remove('open');modalContext=null;}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
+document.getElementById('modalOverlay').addEventListener('click',e=>{if(e.target===document.getElementById('modalOverlay'))closeModal();});
+
+function sOpts(c){return['progress','done','hold','stuck','closed','heldup'].map(s=>`<option${s===c?' selected':''}>${s}</option>`).join('');}
+function msOpts(c){return['progress','done','hold','stuck'].map(s=>`<option${s===c?' selected':''}>${s}</option>`).join('');}
+
+function openEditMilestone(e,pid,label){e.stopPropagation();const p=DATA.active.find(x=>x.id===pid);const ms=p&&(p.milestones||[]).find(m=>m.label===label);if(!ms)return;openModal('Edit Milestone',`<label>Label</label><input id="m_label" value="${esc(ms.label)}"><label>Comment / Notes</label><textarea id="m_comment">${ms.comment||''}</textarea><label>Staff</label><input id="m_staff" value="${ms.staff||''}"><label>Status</label><select id="m_status">${msOpts(ms.status)}</select><label>Date (optional)</label><input id="m_date" value="${ms.date||''}">`,{type:'milestone',projectId:pid,originalLabel:label},false);}
+function openAddMilestone(e,pid){e.stopPropagation();openModal('Add Milestone',`<label>Label</label><input id="m_label"><label>Comment / Notes</label><textarea id="m_comment"></textarea><label>Staff</label><input id="m_staff"><label>Status</label><select id="m_status">${msOpts('progress')}</select><label>Date (optional)</label><input id="m_date">`,{type:'addMilestone',projectId:pid},false);}
+function openEditProject(e,pid){e.stopPropagation();const p=DATA.active.find(x=>x.id===pid);if(!p)return;openModal('Edit Project',`<label>Project ID</label><input id="p_id" value="${esc(p.id)}"><label>Project Name</label><input id="p_name" value="${esc(p.name)}"><label>Phase</label><input id="p_phase" value="${p.phase||''}"><label>Staff (comma separated)</label><input id="p_staff" value="${(p.staff||[]).join(', ')}"><label>Overall Status</label><select id="p_overall">${sOpts(p.overall)}</select>`,{type:'project',projectId:pid},true);}
+function openAddProject(){openModal('Add New Project',`<label>Project ID</label><input id="p_id"><label>Project Name</label><input id="p_name"><label>Phase</label><input id="p_phase"><label>Staff (comma separated)</label><input id="p_staff"><label>Status</label><select id="p_overall">${sOpts('progress')}</select><label>First Milestone</label><input id="p_firstMilestone">`,{type:'addProject'},false);}
+function openEditSimple(e,id,section){e.stopPropagation();const list=section==='standby'?(DATA.standby||[]):(DATA.onHold||[]);const p=list.find(x=>x.id===id);if(!p)return;openModal('Edit Project',`<label>Project ID</label><input id="s_id" value="${esc(p.id)}"><label>Project Name</label><input id="s_name" value="${esc(p.name)}"><label>Staff (comma separated)</label><input id="s_staff" value="${(p.staff||[]).join(', ')}"><label>Comment</label><textarea id="s_comment">${p.comment||''}</textarea>`,{type:'simple',id,section},false);}
+function openAddOnHold(){openModal('Add On-Hold Project',`<label>Project ID</label><input id="s_id"><label>Project Name</label><input id="s_name"><label>Staff (comma separated)</label><input id="s_staff"><label>Comment</label><textarea id="s_comment"></textarea>`,{type:'addSimple',section:'onHold'},false);}
+function openEditLodgement(e,id){e.stopPropagation();const p=(DATA.lodgements||[]).find(x=>x.id===id);if(!p)return;openModal('Edit Lodgement',`<label>Project ID</label><input id="l_id" value="${esc(p.id)}"><label>Project Name</label><input id="l_name" value="${esc(p.name)}"><label>Staff (comma separated)</label><input id="l_staff" value="${(p.staff||[]).join(', ')}"><label>Authority</label><input id="l_authority" value="${p.authority||''}"><label>Ref No</label><input id="l_refNo" value="${p.refNo||''}"><label>Status</label><select id="l_status">${sOpts(p.status)}</select><label>Latest Update</label><textarea id="l_update">${p.latestUpdate||''}</textarea><label>Add Follow-up Note (optional)</label><input id="l_histDate" placeholder="Date e.g. 29/04/26"><input id="l_histBy" placeholder="Updated by" style="margin-top:4px"><textarea id="l_histNote" placeholder="Follow-up note" style="margin-top:4px"></textarea>`,{type:'lodgement',id},false);}
+function openAddLodgement(){openModal('Add Lodgement',`<label>Project ID</label><input id="l_id"><label>Project Name</label><input id="l_name"><label>Staff (comma separated)</label><input id="l_staff"><label>Authority</label><input id="l_authority"><label>Ref No</label><input id="l_refNo"><label>Status</label><select id="l_status">${sOpts('progress')}</select><label>Latest Update</label><textarea id="l_update"></textarea>`,{type:'addLodgement'},false);}
+
+async function handleModalSave(){
+  const ctx=modalContext;if(!ctx)return;
+  const val=id=>{const el=document.getElementById(id);return el?el.value.trim():'';};
+  try{
+    if(ctx.type==='milestone'){await apiPost({action:'updateMilestone',projectId:ctx.projectId,label:ctx.originalLabel,comment:val('m_comment'),staff:val('m_staff'),status:val('m_status'),date:val('m_date')});showToast('Milestone updated','success');}
+    else if(ctx.type==='addMilestone'){await apiPost({action:'addMilestone',projectId:ctx.projectId,label:val('m_label'),comment:val('m_comment'),staff:val('m_staff'),status:val('m_status'),date:val('m_date')});showToast('Milestone added','success');}
+    else if(ctx.type==='project'){await apiPost({action:'updateProject',id:val('p_id'),name:val('p_name'),phase:val('p_phase'),staff:val('p_staff').split(',').map(s=>s.trim()).filter(Boolean),overall:val('p_overall')});showToast('Project updated','success');}
+    else if(ctx.type==='addProject'){await apiPost({action:'addProject',id:val('p_id'),name:val('p_name'),phase:val('p_phase'),staff:val('p_staff').split(',').map(s=>s.trim()).filter(Boolean),overall:val('p_overall'),firstMilestone:val('p_firstMilestone')});showToast('Project added','success');}
+    else if(ctx.type==='simple'||ctx.type==='addSimple'){await apiPost({action:'updateOnHold',section:ctx.section,id:val('s_id'),name:val('s_name'),staff:val('s_staff').split(',').map(s=>s.trim()).filter(Boolean),comment:val('s_comment')});showToast('Updated','success');}
+    else if(ctx.type==='lodgement'){const hn=val('l_histNote');const pl={action:'updateLodgement',id:val('l_id'),name:val('l_name'),staff:val('l_staff').split(',').map(s=>s.trim()).filter(Boolean),authority:val('l_authority'),refNo:val('l_refNo'),status:val('l_status'),latestUpdate:val('l_update')};if(hn){pl.histDate=val('l_histDate');pl.histBy=val('l_histBy');pl.histNote=hn;}await apiPost(pl);showToast('Lodgement updated','success');}
+    else if(ctx.type==='addLodgement'){await apiPost({action:'addLodgement',id:val('l_id'),name:val('l_name'),staff:val('l_staff').split(',').map(s=>s.trim()).filter(Boolean),authority:val('l_authority'),refNo:val('l_refNo'),status:val('l_status'),latestUpdate:val('l_update')});showToast('Lodgement added','success');}
+    closeModal();
+  }catch(e){showToast('Save failed: '+e.message,'error');}
+}
+
+async function handleModalDelete(){
+  if(!modalContext||!confirm('Delete this item?'))return;
+  try{if(modalContext.type==='project'){await apiPost({action:'deleteProject',id:modalContext.projectId});showToast('Deleted','success');closeModal();}else{showToast('Delete rows directly in Google Sheets.','error');}}
+  catch(e){showToast('Delete failed: '+e.message,'error');}
+}
+
+window.toggleHistory=toggleHistory;window.toggleCard=toggleCard;
+window.handleModalSave=handleModalSave;window.handleModalDelete=handleModalDelete;window.closeModal=closeModal;
+window.openEditMilestone=openEditMilestone;window.openAddMilestone=openAddMilestone;
+window.openEditProject=openEditProject;window.openAddProject=openAddProject;
+window.openEditSimple=openEditSimple;window.openAddOnHold=openAddOnHold;
+window.openEditLodgement=openEditLodgement;window.openAddLodgement=openAddLodgement;
+</script>
+</body>
+</html>
